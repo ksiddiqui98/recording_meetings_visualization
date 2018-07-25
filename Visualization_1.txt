@@ -10,6 +10,7 @@ Where people are
 	2. Be able to change the size of the bubbles based on the amount of time someone speaks
 		have to calculate from the json? —> start and end times are given in json so can calculate the amount of time someone speaks in seconds and change the size of the bubbles proportionally
 			need to figure out a good scale to use to increase the sizes of the nodes
+				can't figure out how to save the previous size to a variable then increase the variable --> cannot figure out how to increase size from the previous size
 		also have to consider rescaling entire visualization if one becomes too big
 	3. Be able to change the colors in a scalar way from light to dark based on the number of times the person talks
 		d3 provides different color scales which can be used for the color scale
