@@ -1,5 +1,4 @@
 Level 1 Visualization
-Where people are
 	1. Place people in a circle with correct number of people
 		currently number is set, will need to be able to read number of people from the json file
 		need to consider the number of people in the meeting to determine radius because we don’t want overlapping nodes if there are too many of them
@@ -10,6 +9,7 @@ Where people are
 	2. Be able to change the size of the bubbles based on the amount of time someone speaks
 		have to calculate from the json? —> start and end times are given in json so can calculate the amount of time someone speaks in seconds and change the size of the bubbles proportionally
 			need to figure out a good scale to use to increase the sizes of the nodes
+				can't figure out how to save the previous size to a variable then increase the variable --> cannot figure out how to increase size from the previous size
 		also have to consider rescaling entire visualization if one becomes too big
 	3. Be able to change the colors in a scalar way from light to dark based on the number of times the person talks
 		d3 provides different color scales which can be used for the color scale
@@ -24,7 +24,11 @@ Where people are
 	7. Be able to show the transcript of the person that has just spoke
 		should be easy with transcript data from the json
 			how accurate will the transcript be right after someone has finished speaking?
-	8. Add timeline functionality so people are able to go back in time in the meeting
+		trying to contain the transcript in a shape
+			trying to place the transcript box in different places for different people speaking
+	8. Add mouseover function to get more quantitative information from each circle
+		mouseover function previously used in last visualization and there are many examples of mouseover fucntions so should not be too difficult to implement
+	9. Add timeline functionality so people are able to go back in time in the meeting
 			Examples:
 			https://github.com/commodityvectors/d3-timeline
 			https://github.com/marmelab/EventDrops
