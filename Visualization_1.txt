@@ -1,5 +1,4 @@
 Level 1 Visualization
-Where people are
 	1. Place people in a circle with correct number of people
 		currently number is set, will need to be able to read number of people from the json file
 		need to consider the number of people in the meeting to determine radius because we don’t want overlapping nodes if there are too many of them
