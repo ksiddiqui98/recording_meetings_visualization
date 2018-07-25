@@ -48,6 +48,14 @@
                             .attr("height", 750)
                             .style("border", "1px solid black");
 
+        // var square = svgContainer.append("rect")
+        //                         .attr("x", 500)
+        //                         .attr("y", 100)
+        //                         .attr("width", 200)
+        //                         .attr("height", 100)
+        //                         .style("stroke", "black")
+        //                         .style("fill", "white");
+
         // loops through for each participant and creates a node
         // and evenly spaces the nodes around the circle
         // in the future will use location data from Json to place people
@@ -78,24 +86,35 @@
                                 .attr("font-size", "20px")
                                 .attr("fill", "black")
                                 .attr("text-anchor", "middle");
-
-            
         }
+
+        var textSegment = "Hello";
+
+        var trans = transcriptText(textSegment, 3);
+
+        var transcript = svgContainer.append("text")
+                                    .attr("x", 50)
+                                    .attr("y", 600)
+                                    .text(trans)
+                                    .attr("font-family", "san-serif")
+                                    .attr("font-size", "20px")
+                                    .attr("fill", "black");
+
 
         var currentlySpeaking = true;
         var previouslySpoke = true;
         var currentRad = 40;
         
-        currently(circleData);
-        previously(circleData);
-        timeSpoke(12, circleData);
+        currently(circleData, 3);
+        previously(circleData, 4);
+        timeSpoke(12, circleData, 4);
 
 
         // function will be passed the id of the person currently speaking
         // and highlight them
-        function currently(data) {
+        function currently(data, id) {
             if(currentlySpeaking) {
-                data[3].style("stroke", "red")
+                data[id].style("stroke", "red")
                         .style("stroke-width", "10px");
             }
         }
@@ -103,11 +122,11 @@
         // function will be passed the id of the person who
         // just spoke and highlight them
         // will also darken the color of the circle by 1 shade
-        function previously(data) {
+        function previously(data, id) {
             if(previouslySpoke) {
-                data[2].style("stroke", "lightpink")
+                data[id].style("stroke", "lightpink")
                         .style("stroke-width", "5px");
-                data[2].style("fill", colors[5]);
+                data[id].style("fill", colors[5]);
             }
         }
 
@@ -115,9 +134,13 @@
         // and change the size of the node proportionally to the amount
         // of time
         // function will also be passed id of person who spoke
-        function timeSpoke(time, data) {
+        function timeSpoke(time, data, id) {
             // currentRad = data[2].r;
-            data[2].attr("r", (currentRad + (time * .25)));
+            data[id].attr("r", (currentRad + (time * .25)));
+        }
+
+        function transcriptText(text, id) {
+            return "Transcript: \n Person " + alpha[id] + " - " + text;
         }
         
     </script>
