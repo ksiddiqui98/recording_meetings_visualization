@@ -26,6 +26,7 @@ Level 1 Visualization
 			how accurate will the transcript be right after someone has finished speaking?
 		trying to contain the transcript in a shape
 			trying to place the transcript box in different places for different people speaking
+			can tie this transcript box to the previously spoke because the person that previously spoke will be the one whose transcript shows up
 	8. Add mouseover function to get more quantitative information from each circle
 		mouseover function previously used in last visualization and there are many examples of mouseover fucntions so should not be too difficult to implement
 	9. Add timeline functionality so people are able to go back in time in the meeting
