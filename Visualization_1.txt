@@ -34,3 +34,5 @@ Level 1 Visualization
 			https://github.com/commodityvectors/d3-timeline
 			https://github.com/marmelab/EventDrops
 			http://romsson.github.io/dragit/example/nations.html --> Leaning in this direction
+
+	10. So after the meeting, I checked for the raw user data we had, one has to look at the timestamps in the speech file. In the user file, look only at instances where speechID is nonzero. From there one has to compare timestamps. Can someone confirm this? If there's anything needed to be added or made any corretions for in to the above method, can someone please do so? Going by the above, the user_0 file has no nonzero speechID's, meaning user_0 has no speech dialogue at all. Is anyone else running into this problem too? I think we should focus on getting usable data out before the weekend.
