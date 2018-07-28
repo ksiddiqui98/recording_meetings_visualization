@@ -19,6 +19,8 @@ Level 1 Visualization
 			need to figure out how to tag each node with respective IDs and update the correct node based on ID
 	5. Be able to tell who is currently talking from the json
 		not sure if this is possible due to the fact that it may not write to the json file until the person has finished talking due to the transcript
+		combine the currently speaking function to increase the bubble in real time as the person speaks
+			starts to increase in size for each second as the person is currently speaking
 	6. Be able to highlight the person that just finished talking
 		should be easy with the json data if it shows after the person has finished their transcript
 	7. Be able to show the transcript of the person that has just spoke
