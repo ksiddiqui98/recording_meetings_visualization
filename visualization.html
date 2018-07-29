@@ -29,10 +29,14 @@
         var diameter = 760;
         // controls the number of nodes
         // will read from Json file
-        var numParticipants = 10;
+        var numParticipants = 6;
         var participantSpeak = [];
+        var participantTime = [];
         var k;
-        for(k = 0; k < numParticipants; k++){participantSpeak[k] = 0;}
+        for(k = 0; k < numParticipants; k++){
+            participantSpeak[k] = 0;
+            participantTime[k] = 0;
+        }
         // array of circles
         var circleData = [];
         var angle = 0;
@@ -40,6 +44,20 @@
         var x_1 = [];
         var y = 0;
         var y_1 = [];
+
+        var tooltip = d3.select("body")
+                        .append("div")
+                        .style("position", "absolute")
+                        .style("z-index", "10")
+                        .style("visibility", "hidden")
+                        .style("color", "white")
+                        .style("padding", "8px")
+                        // last value is transparency
+                        .style("background-color", "rgba(0, 0, 0, 0.50)")
+                        .style("border-radius", "6px")
+                        .style("font", "12px sans-serif")
+                        .text("tooltip");
+
         
         var alpha = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O"];
         var colors = ["gainsboro", "lightgray", "silver", "darkgray", "gray", "dimgray", "lightslategray", "slategray", "darkslategray", "black"];
@@ -70,7 +88,18 @@
                                 .attr("id", i)
                                 .style("stroke", "black")
                                 .style("fill", colors[0])
-                                .style("padding", "2px");
+                                .style("padding", "2px")
+                                .on("mouseover", function(d) {
+                                    return tooltip.text("Times Spoken: Total Time: ")
+                                                .style("visibility", "visible");
+                                })
+                                .on("mousemove", function() {
+                                    return tooltip.style("top", (d3.event.pageY-10)+"px")
+                                                .style("left",(d3.event.pageX+10)+"px");
+                                })
+                                .on("mouseout", function() {
+                                    return tooltip.style("visibility", "hidden");
+                                })
             
             circleData.push(circle);
 
@@ -79,14 +108,26 @@
             var text = svgContainer.append("text")
                                 .attr("x", x)
                                 .attr("y", y + 6)
-                                .text(id)
+                                .text(alpha[id])
                                 .attr("font-family", "san-serif")
                                 .attr("font-size", "20px")
                                 .attr("fill", "black")
-                                .attr("text-anchor", "middle");
+                                .attr("text-anchor", "middle")
+                                .on("mouseover", function(d) {
+                                    return tooltip.text("Times Spoken: Total Time: ")
+                                                .style("visibility", "visible");
+                                })
+                                .on("mousemove", function() {
+                                    return tooltip.style("top", (d3.event.pageY-10)+"px")
+                                                .style("left",(d3.event.pageX+10)+"px");
+                                })
+                                .on("mouseout", function() {
+                                    return tooltip.style("visibility", "hidden");
+                                })
                
             
         }
+
         var currentlySpeaking = true;
         var previouslySpoke = true;
         var currentRad = 40;
@@ -200,6 +241,7 @@
 	function timeSpoke(timsec, data,i,ret) 
     {
             // currentRad = data[2].r;
+            participantTime[i]+= timsec;
             var rad = parseInt(data[i].attr("r"));
             // increase one unit of radius every minute
             // every second then increases 1/60th of a unit, slow progression
