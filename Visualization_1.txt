@@ -33,6 +33,3 @@ Level 1 Visualization
 			https://github.com/commodityvectors/d3-timeline
 			https://github.com/marmelab/EventDrops
 			http://romsson.github.io/dragit/example/nations.html --> Leaning in this direction
-			
-	New: Think about combining the currently speaking function with the timeSpoke function to increase the bubble in real time as the person speaks
-		starts to increase in size as boolean of currentlySpeaking == true?
