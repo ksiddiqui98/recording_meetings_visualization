@@ -19,10 +19,10 @@
     <h1>Meeting Analysis</h1>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script>
-        var ourRequest = new XMLHttpRequest();
-        ourRequest.open('GET', *********FILE_LOCATION***************)
-        ourRequest.onload = function(){
-            var RAWJSON_INFO=JSON.parse(ourRequest.responseText);
+        // var ourRequest = new XMLHttpRequest();
+        // ourRequest.open('GET', *********FILE_LOCATION***************)
+        // ourRequest.onload = function(){
+        //     var RAWJSON_INFO=JSON.parse(ourRequest.responseText);
         // arbitrarily sets width, height, and diameter
         var width = 770;
         var height = 940;
@@ -88,9 +88,9 @@
                                 .attr("id", i)
                                 .style("stroke", "black")
                                 .style("fill", colors[0])
-                                .style("padding", "2px")
-                                .on("mouseover", function(d) {
-                                    return tooltip.text("Times Spoken: Total Time: ")
+                                .style("padding", 2)
+                                .on("mouseover", function(d, id) {
+                                    return tooltip.text("Times Spoken: " + parseInt(participantSpeak[id]) + " Total Time: "  + parseInt(participantTime[i]))
                                                 .style("visibility", "visible");
                                 })
                                 .on("mousemove", function() {
@@ -113,8 +113,8 @@
                                 .attr("font-size", "20px")
                                 .attr("fill", "black")
                                 .attr("text-anchor", "middle")
-                                .on("mouseover", function(d) {
-                                    return tooltip.text("Times Spoken: Total Time: ")
+                                .on("mouseover", function(d, id) {
+                                    return tooltip.text("Times Spoken: " + parseInt(participantSpeak[id]) + " Total Time: " + parseInt(participantTime[i]))
                                                 .style("visibility", "visible");
                                 })
                                 .on("mousemove", function() {
@@ -130,7 +130,6 @@
 
         var currentlySpeaking = true;
         var previouslySpoke = true;
-        var currentRad = 40;
         
         currently(circleData,4);
         currently(circleData,4);
@@ -153,8 +152,6 @@
         currently(circleData,4);
         currently(circleData,4);
         currently(circleData,4);
-
-
 
         currently(circleData,3);
         currently(circleData,3);
@@ -163,7 +160,32 @@
         currently(circleData,3);
         
         previously(circleData, svgContainer, x_1,y_1,3);
-		previously_remove(svgContainer);
+        previously_remove(svgContainer);
+        remPreviouslySpoke(circleData, 3);
+        previously(circleData, svgContainer, x_1,y_1,4);
+        previously_remove(svgContainer);
+        remPreviouslySpoke(circleData, 4);
+        previously(circleData, svgContainer, x_1,y_1,1);
+        previously_remove(svgContainer);
+        remPreviouslySpoke(circleData, 1);
+        previously(circleData, svgContainer, x_1,y_1,3);
+        previously_remove(svgContainer);
+        remPreviouslySpoke(circleData, 3);
+        previously(circleData, svgContainer, x_1,y_1,2);
+        previously_remove(svgContainer);
+        remPreviouslySpoke(circleData, 2);
+        previously(circleData, svgContainer, x_1,y_1,0);
+        previously_remove(svgContainer);
+        remPreviouslySpoke(circleData, 0);
+        previously(circleData, svgContainer, x_1,y_1,5);
+        previously_remove(svgContainer);
+        remPreviouslySpoke(circleData, 5);
+        previously(circleData, svgContainer, x_1,y_1,3);
+        previously_remove(svgContainer);
+        remPreviouslySpoke(circleData, 3);
+        previously(circleData, svgContainer, x_1,y_1,3);
+        previously_remove(svgContainer);
+        remPreviouslySpoke(circleData, 3);
         // function will be passed the id of the person currently speaking
         // and highlight them
         
@@ -192,7 +214,7 @@
         function previously(data,svgC,x_r,y_r,i) // ,sti) 
         {
 
-            timeSpoke(30, data,5,10);
+            timeSpoke(150,data,i,10);
 
             if(previouslySpoke) {		// this might come in handy so not removing
                 data[i].style("stroke", "lightpink")
@@ -237,6 +259,11 @@
         // and change the size of the node proportionally to the amount
         // of time
         // function will also be passed id of person who spoke
+
+        function remPreviouslySpoke(data, i) {
+            data[i].style("stroke", "black");
+            data[i].style("stroke-width", "1px");
+        }
        
 	function timeSpoke(timsec, data,i,ret) 
     {
@@ -249,7 +276,7 @@
             data[i].attr("r", (rad + 1*(ret*timsec/60) ));
         }
         
-        ourRequest.send();
+        // ourRequest.send();
     </script>
     
 </body>
