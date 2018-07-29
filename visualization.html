@@ -24,128 +24,130 @@
         var ourRequest = new XMLHttpRequest();
         ourRequest.open('GET', *********FILE_LOCATION***************)
         ourRequest.onload = function(){
-        // arbitrarily sets width, height, and diameter
-        var width = 770;
-        var height = 940;
-        var diameter = 760;
+            var RAWJSON_INFO=JSON.parse(ourRequest.responseText);
 
-        // controls the number of nodes
-        // will read from Json file
-        var numParticipants = 6;
+            // arbitrarily sets width, height, and diameter
+            var width = 770;
+            var height = 940;
+            var diameter = 760;
 
-        // array of circles
-        var circleData = [];
-        var angle = 0;
-        var x = 0;
-        var y = 0;
-        var alpha = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O"];
-        var colors = ["gainsboro", "lightgray", "silver", "darkgray", "gray", "dimgray", "lightslategray", "slategray", "darkslategray", "black"];
+            // controls the number of nodes
+            // will read from Json file
+            var numParticipants = 6;
 
-        // controls radius of circle the nodes are around
-        var radius = 150;
+            // array of circles
+            var circleData = [];
+            var angle = 0;
+            var x = 0;
+            var y = 0;
+            var alpha = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O"];
+            var colors = ["gainsboro", "lightgray", "silver", "darkgray", "gray", "dimgray", "lightslategray", "slategray", "darkslategray", "black"];
 
-        // creates container that the nodes are in with specific attributes
-        var svgContainer = d3.select("body")
-                            .append("svg")
-                            .attr("width", 750)
-                            .attr("height", 750)
-                            .style("border", "1px solid black");
+            // controls radius of circle the nodes are around
+            var radius = 150;
 
-        // var square = svgContainer.append("rect")
-        //                         .attr("x", 500)
-        //                         .attr("y", 100)
-        //                         .attr("width", 200)
-        //                         .attr("height", 100)
-        //                         .style("stroke", "black")
-        //                         .style("fill", "white");
+            // creates container that the nodes are in with specific attributes
+            var svgContainer = d3.select("body")
+                                .append("svg")
+                                .attr("width", 750)
+                                .attr("height", 750)
+                                .style("border", "1px solid black");
 
-        // loops through for each participant and creates a node
-        // and evenly spaces the nodes around the circle
-        // in the future will use location data from Json to place people
-        // also need to attach ID to each node
-        for(var i = 0; i < numParticipants; i++) {
-            // formula from here http://bl.ocks.org/bycoffe/3404776
-            angle = (i / (numParticipants/2)) * Math.PI;
-            x = (radius * Math.cos(angle)) + (width/2);
-            y = (radius * Math.sin(angle)) + (width/2);
+            // var square = svgContainer.append("rect")
+            //                         .attr("x", 500)
+            //                         .attr("y", 100)
+            //                         .attr("width", 200)
+            //                         .attr("height", 100)
+            //                         .style("stroke", "black")
+            //                         .style("fill", "white");
 
-            var circle = svgContainer.append("circle")
-                                .attr("cx", x)
-                                .attr("cy", y)
-                                .attr("r", 25)
-                                .attr("id", alpha[i])
-                                .style("stroke", "black")
-                                .style("fill", colors[0]);
-            
-            circleData.push(circle);
+            // loops through for each participant and creates a node
+            // and evenly spaces the nodes around the circle
+            // in the future will use location data from Json to place people
+            // also need to attach ID to each node
+            for(var i = 0; i < numParticipants; i++) {
+                // formula from here http://bl.ocks.org/bycoffe/3404776
+                angle = (i / (numParticipants/2)) * Math.PI;
+                x = (radius * Math.cos(angle)) + (width/2);
+                y = (radius * Math.sin(angle)) + (width/2);
 
-            console.log(circleData[i].id);
+                var circle = svgContainer.append("circle")
+                                    .attr("cx", x)
+                                    .attr("cy", y)
+                                    .attr("r", 25)
+                                    .attr("id", alpha[i])
+                                    .style("stroke", "black")
+                                    .style("fill", colors[0]);
 
-            var text = svgContainer.append("text")
-                                .attr("x", x)
-                                .attr("y", y + 6)
-                                .text(alpha[i])
-                                .attr("font-family", "san-serif")
-                                .attr("font-size", "20px")
-                                .attr("fill", "black")
-                                .attr("text-anchor", "middle");
-        }
+                circleData.push(circle);
 
-        var textSegment = "Hello";
+                console.log(circleData[i].id);
 
-        var trans = transcriptText(textSegment, 3);
-
-        var transcript = svgContainer.append("text")
-                                    .attr("x", 50)
-                                    .attr("y", 600)
-                                    .text(trans)
+                var text = svgContainer.append("text")
+                                    .attr("x", x)
+                                    .attr("y", y + 6)
+                                    .text(alpha[i])
                                     .attr("font-family", "san-serif")
                                     .attr("font-size", "20px")
-                                    .attr("fill", "black");
-
-
-        var currentlySpeaking = true;
-        var previouslySpoke = true;
-        var currentRad = 40;
-        
-        currently(circleData, 3);
-        previously(circleData, 4);
-        timeSpoke(12, circleData, 4);
-
-
-        // function will be passed the id of the person currently speaking
-        // and highlight them
-        function currently(data, id) {
-            if(currentlySpeaking) {
-                data[id].style("stroke", "red")
-                        .style("stroke-width", "10px");
+                                    .attr("fill", "black")
+                                    .attr("text-anchor", "middle");
             }
-        }
-        
-        // function will be passed the id of the person who
-        // just spoke and highlight them
-        // will also darken the color of the circle by 1 shade
-        function previously(data, id) {
-            if(previouslySpoke) {
-                data[id].style("stroke", "lightpink")
-                        .style("stroke-width", "5px");
-                data[id].style("fill", colors[5]);
+
+            var textSegment = "Hello";
+
+            var trans = transcriptText(textSegment, 3);
+
+            var transcript = svgContainer.append("text")
+                                        .attr("x", 50)
+                                        .attr("y", 600)
+                                        .text(trans)
+                                        .attr("font-family", "san-serif")
+                                        .attr("font-size", "20px")
+                                        .attr("fill", "black");
+
+
+            var currentlySpeaking = true;
+            var previouslySpoke = true;
+            var currentRad = 40;
+
+            currently(circleData, 3);
+            previously(circleData, 4);
+            timeSpoke(12, circleData, 4);
+
+
+            // function will be passed the id of the person currently speaking
+            // and highlight them
+            function currently(data, id) {
+                if(currentlySpeaking) {
+                    data[id].style("stroke", "red")
+                            .style("stroke-width", "10px");
+                }
             }
-        }
 
-        // function will be passed the amount of time someone spoke in seconds
-        // and change the size of the node proportionally to the amount
-        // of time
-        // function will also be passed id of person who spoke
-        function timeSpoke(time, data, id) {
-            // currentRad = data[2].r;
-            data[id].attr("r", (currentRad + (time * .25)));
-        }
+            // function will be passed the id of the person who
+            // just spoke and highlight them
+            // will also darken the color of the circle by 1 shade
+            function previously(data, id) {
+                if(previouslySpoke) {
+                    data[id].style("stroke", "lightpink")
+                            .style("stroke-width", "5px");
+                    data[id].style("fill", colors[5]);
+                }
+            }
 
-        function transcriptText(text, id) {
-            return "Transcript: \n Person " + alpha[id] + " - " + text;
-        }
-            
+            // function will be passed the amount of time someone spoke in seconds
+            // and change the size of the node proportionally to the amount
+            // of time
+            // function will also be passed id of person who spoke
+            function timeSpoke(time, data, id) {
+                // currentRad = data[2].r;
+                data[id].attr("r", (currentRad + (time * .25)));
+            }
+
+            function transcriptText(text, id) {
+                return "Transcript: \n Person " + alpha[id] + " - " + text;
+            }
+
         };
         ourRequest.send();
     </script>
