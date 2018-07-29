@@ -19,6 +19,8 @@ Level 1 Visualization
 			need to figure out how to tag each node with respective IDs and update the correct node based on ID
 	5. Be able to tell who is currently talking from the json
 		not sure if this is possible due to the fact that it may not write to the json file until the person has finished talking due to the transcript
+		combine the currently speaking function to increase the bubble in real time as the person speaks
+			starts to increase in size for each second as the person is currently speaking
 	6. Be able to highlight the person that just finished talking
 		should be easy with the json data if it shows after the person has finished their transcript
 	7. Be able to show the transcript of the person that has just spoke
@@ -26,6 +28,7 @@ Level 1 Visualization
 			how accurate will the transcript be right after someone has finished speaking?
 		trying to contain the transcript in a shape
 			trying to place the transcript box in different places for different people speaking
+			can tie this transcript box to the previously spoke because the person that previously spoke will be the one whose transcript shows up
 	8. Add mouseover function to get more quantitative information from each circle
 		mouseover function previously used in last visualization and there are many examples of mouseover fucntions so should not be too difficult to implement
 	9. Add timeline functionality so people are able to go back in time in the meeting
@@ -33,3 +36,5 @@ Level 1 Visualization
 			https://github.com/commodityvectors/d3-timeline
 			https://github.com/marmelab/EventDrops
 			http://romsson.github.io/dragit/example/nations.html --> Leaning in this direction
+
+	10. So after the meeting, I checked for the raw user data we had, one has to look at the timestamps in the speech file. In the user file, look only at instances where speechID is nonzero. From there one has to compare timestamps. Can someone confirm this? If there's anything needed to be added or made any corretions for in to the above method, can someone please do so? Going by the above, the user_0 file has no nonzero speechID's, meaning user_0 has no speech dialogue at all. Is anyone else running into this problem too? I think we should focus on getting usable data out before the weekend.
