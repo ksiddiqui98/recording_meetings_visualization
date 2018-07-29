@@ -21,6 +21,9 @@
     <h1>Meeting Analysis</h1>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script>
+        var ourRequest = new XMLHttpRequest();
+        ourRequest.open('GET', *********FILE_LOCATION***************)
+        ourRequest.onload = function(){
         // arbitrarily sets width, height, and diameter
         var width = 770;
         var height = 940;
@@ -142,7 +145,9 @@
         function transcriptText(text, id) {
             return "Transcript: \n Person " + alpha[id] + " - " + text;
         }
-        
+            
+        };
+        ourRequest.send();
     </script>
     
 </body>
