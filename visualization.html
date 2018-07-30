@@ -32,10 +32,12 @@
         var numParticipants = 6;
         var participantSpeak = [];
         var participantTime = [];
-        var k;
+        var participantColor = [];
+        var k, i;
         for(k = 0; k < numParticipants; k++){
             participantSpeak[k] = 0;
             participantTime[k] = 0;
+            participantColor[k] = 0;
         }
         // array of circles
         var circleData = [];
@@ -52,15 +54,17 @@
                         .style("visibility", "hidden")
                         .style("color", "white")
                         .style("padding", "8px")
-                        // last value is transparency
                         .style("background-color", "rgba(0, 0, 0, 0.50)")
                         .style("border-radius", "6px")
                         .style("font", "12px sans-serif")
                         .text("tooltip");
 
         
-        var alpha = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O"];
-        var colors = ["gainsboro", "lightgray", "silver", "darkgray", "gray", "dimgray", "lightslategray", "slategray", "darkslategray", "black"];
+        var alpha = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+        //http://bl.ocks.org/jfreyre/b1882159636cc9e1283a
+        var colors = d3.scaleLinear().domain([1,50])
+                            .interpolate(d3.interpolateHcl)
+                            .range([d3.rgb("#FFFFFF"), d3.rgb('#191970')])
         // controls radius of circle the nodes are around
         var radius = 150;
         // creates container that the nodes are in with specific attributes
@@ -73,7 +77,7 @@
         // and evenly spaces the nodes around the circle
         // in the future will use location data from Json to place people (Will need to generate relative coordinates in 2D unless the visualization is done in 3D)
         // also need to attach ID to each node
-        for(var i = 0; i < numParticipants; i++) 
+        for(i = 0; i < numParticipants; i++) 
         {
             // formula from here http://bl.ocks.org/bycoffe/3404776
             angle = (i / (numParticipants/2)) * Math.PI;
@@ -87,7 +91,7 @@
                                 .attr("r", 25)
                                 .attr("id", i)
                                 .style("stroke", "black")
-                                .style("fill", colors[0])
+                                .style("fill",colors(0))
                                 .style("padding", 2)
                                 .on("mouseover", function(d, id) {
                                     return tooltip.text("Times Spoken: " + parseInt(participantSpeak[id]) + " Total Time: "  + parseInt(participantTime[i]))
@@ -186,6 +190,8 @@
         previously(circleData, svgContainer, x_1,y_1,3);
         previously_remove(svgContainer);
         remPreviouslySpoke(circleData, 3);
+
+
         // function will be passed the id of the person currently speaking
         // and highlight them
         
@@ -195,11 +201,12 @@
                 data[i].style("stroke", "red")
                         .style("stroke-width", "10px");
             participantSpeak[i]++;
-            var default_scale = d3.scaleQuantize().domain([0, 50]).range(['white','gray']);
+            participantColor[i]++;
+            // var default_scale = d3.scaleQuantize().domain([0, 50]).range(['white','gray']);
             // syntax as seen on http://jonathansoma.com/tutorials/d3/color-scale-examples/
-		// A simple color scale created using quantization over 50 values, representing the scale going from blue to red
-		// TODO: Different nodes will have different color scales??
-            data[i].style("fill",default_scale(participantSpeak[i]));
+		    // A simple color scale created using quantization over 50 values, representing the scale going from blue to red
+		    // TODO: Different nodes will have different color scales??
+            data[i].style("fill",colors(participantColor[i]));
             
             }
         }
@@ -219,7 +226,7 @@
             if(previouslySpoke) {		// this might come in handy so not removing
                 data[i].style("stroke", "lightpink")
                         .style("stroke-width", "5px");
-                data[i].style("fill", colors[5]);
+                // data[i].style("fill", colors[5]);
                
        //        var ls = sti.length;
        // TODO: After succesfully obtaining transcript data, get character count
