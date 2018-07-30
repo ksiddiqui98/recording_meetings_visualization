@@ -92,7 +92,7 @@
                                 .attr("id", i)
                                 .style("stroke", "black")
                                 .style("fill",colors(0))
-                                .style("padding", 2)
+                                .style("outline", "black")
                                 .on("mouseover", function(d, id) {
                                     return tooltip.text("Times Spoken: " + parseInt(participantSpeak[id]) + " Total Time: "  + parseInt(participantTime[i]))
                                                 .style("visibility", "visible");
@@ -172,26 +172,25 @@
         previously(circleData, svgContainer, x_1,y_1,1);
         previously_remove(svgContainer);
         remPreviouslySpoke(circleData, 1);
-        previously(circleData, svgContainer, x_1,y_1,3);
-        previously_remove(svgContainer);
-        remPreviouslySpoke(circleData, 3);
+        // previously(circleData, svgContainer, x_1,y_1,3);
+        // previously_remove(svgContainer);
+        // remPreviouslySpoke(circleData, 3);
         previously(circleData, svgContainer, x_1,y_1,2);
         previously_remove(svgContainer);
         remPreviouslySpoke(circleData, 2);
         previously(circleData, svgContainer, x_1,y_1,0);
         previously_remove(svgContainer);
         remPreviouslySpoke(circleData, 0);
-        previously(circleData, svgContainer, x_1,y_1,5);
-        previously_remove(svgContainer);
-        remPreviouslySpoke(circleData, 5);
-        previously(circleData, svgContainer, x_1,y_1,3);
-        previously_remove(svgContainer);
-        remPreviouslySpoke(circleData, 3);
-        previously(circleData, svgContainer, x_1,y_1,3);
-        previously_remove(svgContainer);
-        remPreviouslySpoke(circleData, 3);
+        // previously(circleData, svgContainer, x_1,y_1,5);
+        // previously_remove(svgContainer);
+        // remPreviouslySpoke(circleData, 5);
+        // previously(circleData, svgContainer, x_1,y_1,3);
+        // previously_remove(svgContainer);
+        // remPreviouslySpoke(circleData, 3);
+        // previously(circleData, svgContainer, x_1,y_1,3);
+        // previously_remove(svgContainer);
+        // remPreviouslySpoke(circleData, 3);
 
-        var intersecting = checkIntersecting(circleData[0], circleData[1]);
 
 
         // function will be passed the id of the person currently speaking
@@ -228,7 +227,6 @@
             if(previouslySpoke) {		// this might come in handy so not removing
                 data[i].style("stroke", "lightpink")
                         .style("stroke-width", "5px");
-                // data[i].style("fill", colors[5]);
                
        //        var ls = sti.length;
        // TODO: After succesfully obtaining transcript data, get character count
@@ -276,7 +274,6 @@
        
         function timeSpoke(timsec, data,i,ret) 
         {
-            // currentRad = data[2].r;
             participantTime[i]+= timsec;
             var rad = parseInt(data[i].attr("r"));
             // increase one unit of radius every minute
@@ -286,10 +283,28 @@
             // check if intersecting after increasing the sizes
             // OR can check if increasing the size will cause intersection?
             // if so, scale everything down
+            var intersecting = checkIntersecting();
+
+            if(intersecting) {
+                scaleDown(participantTime, circleData, ret);
+            }
+        }
+
+        function scaleDown(originalData,circles, ret) {
+            var newData = [];
+            var minData = d3.min(originalData);
+            var maxData = d3.max(originalData);
+
+            for(var i = 0; i < originalData.length; i++) {
+                newData[i] = originalData[i] * .5;
+                circles[i].attr("r", (25 + 1*(ret*newData[i]/60)));
+            }
+            
+            participantTime = newData;
         }
 
         // http://www.inkfood.com/collision-detection-with-svg/
-        function checkIntersecting(circleData) {
+        function checkIntersecting() {
             for(var i = 0; i < numParticipants; i++) {
                 for(var j = 0; j < numParticipants; j++) {
                     if(i == j) { continue; }
