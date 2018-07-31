@@ -132,109 +132,31 @@
             
         }
 
-        var currentlySpeaking = true;
-        var previouslySpoke = true;
         
-        currently(circleData,4);
-        currently(circleData,4);
-        currently(circleData,4);
-        currently(circleData,4);
-        currently(circleData,4);
-        currently(circleData,4);
-        currently(circleData,4);
-        currently(circleData,4);
-        currently(circleData,4);
-        currently(circleData,4);
-        currently(circleData,4);
-        currently(circleData,4);
-        currently(circleData,4);
-        currently(circleData,4);
-        currently(circleData,4);
-        currently(circleData,4);
-        currently(circleData,4);
-        currently(circleData,4);
-        currently(circleData,4);
-        currently(circleData,4);
-        currently(circleData,4);
-
-        currently(circleData,3);
-        currently(circleData,3);
-        currently(circleData,3);
-        currently(circleData,3);
-        currently(circleData,3);
         
-        previously(circleData, svgContainer, x_1,y_1,3);
-        previously_remove(svgContainer);
-        remPreviouslySpoke(circleData, 3);
-        previously(circleData, svgContainer, x_1,y_1,4);
-        previously_remove(svgContainer);
-        remPreviouslySpoke(circleData, 4);
-        previously(circleData, svgContainer, x_1,y_1,1);
-        previously_remove(svgContainer);
-        remPreviouslySpoke(circleData, 1);
-        previously(circleData, svgContainer, x_1,y_1,3);
-        previously_remove(svgContainer);
-        remPreviouslySpoke(circleData, 3);
-        previously(circleData, svgContainer, x_1,y_1,2);
-        previously_remove(svgContainer);
-        remPreviouslySpoke(circleData, 2);
-        previously(circleData, svgContainer, x_1,y_1,0);
-        previously_remove(svgContainer);
-        remPreviouslySpoke(circleData, 0);
-        previously(circleData, svgContainer, x_1,y_1,5);
-        previously_remove(svgContainer);
-        remPreviouslySpoke(circleData, 5);
-        previously(circleData, svgContainer, x_1,y_1,3);
-        previously_remove(svgContainer);
-        remPreviouslySpoke(circleData, 3);
-        previously(circleData, svgContainer, x_1,y_1,3);
-        previously_remove(svgContainer);
-        remPreviouslySpoke(circleData, 3);
-
-
-
-        // function will be passed the id of the person currently speaking
-        // and highlight them
-        
-        function currently(data,i) {
-            if(currentlySpeaking) {		// this might come in handy so not removing
-            
-                data[i].style("stroke", "red")
-                        .style("stroke-width", "10px");
+        // function  highlights circle, expands the radius,
+        // changes the color, and shows the transcript
+        // make sure to check for collisions
+        // could check before expanding and scale down if needed
+        // or increase size then check then scale down
+        // args: svg container, x val if circle, y val of circle, id,
+        // time spoke in seconds, and scaling factor
+        // scaling factor currently arbitrarily 10
+        function previously(svgC, x_r, y_r, i, timsec, factor) {
             participantSpeak[i]++;
-            // var default_scale = d3.scaleQuantize().domain([0, 50]).range(['white','gray']);
-            // syntax as seen on http://jonathansoma.com/tutorials/d3/color-scale-examples/
-		    // A simple color scale created using quantization over 50 values, representing the scale going from blue to red
-		    // TODO: Different nodes will have different color scales??
-            data[i].style("fill",colors(participantSpeak[i]));
-            
-            }
-        }
-        
-        // function will be passed the id of the person who
-        // just spoke and highlight them
-        // will also darken the color of the circle by 1 shade
-        
-        // Anyone who may have spoken previously will have their transcript 
-        // displayed next to them in a text box
-             
-        function previously(data,svgC,x_r,y_r,i) // ,sti) 
-        {
 
-            timeSpoke(150,data,i,10);
-
-            if(previouslySpoke) {		// this might come in handy so not removing
-                data[i].style("stroke", "lightpink")
+            circleData[i].style("fill", colors(participantSpeak[i]));
+            // highlights circle with light pink ring to
+            // incidate that the person had just spoken
+            circleData[i].style("stroke", "lightpink")
                         .style("stroke-width", "5px");
-               
-       //        var ls = sti.length;
-       // TODO: After succesfully obtaining transcript data, get character count
-       // and determine width of the rectangle on basis of that
-       // Center text on rectangle
-               
-                 svgC.append("rect")
-                .attr("x", parseInt(x_r[i]) + 30)
-                .attr("y", parseInt(y_r[i]) + 30)
+
+            // creates the rectangle that the text is shown in
+            // TODO: make the size of the textbox dynamic and
+            // make sure the text does not go outside of the svgContainer
+            svgC.append("rect")
+                .attr("x", parseInt(x_r[i]) + 30 + (1*(factor*timsec/60)))
+                .attr("y", parseInt(y_r[i]) + 30 + (1*(factor*timsec/60)))
                 .attr("rx",10)
                 .attr("ry",10)
                 .attr("id","rect_box")
@@ -244,59 +166,46 @@
                 .attr("fill","none")
                 .attr("id","rect_box")
                 .attr("border", "1px solid black");
-                
-                
-                svgC.append("text")
-                .attr("x",parseInt(x_r[i]) + 35)
-                .attr("y",parseInt(y_r[i]) + 50)
+
+            participantTimeOriginal[i] += timsec;
+            var rad = parseInt(circleData[i].attr("r"));
+            // increases on eunit of radius every minute
+            // every second then increases 1/60th of a unit
+            circleData[i].attr("r", (rad + 1*(factor*timsec/60)));
+
+
+            // adds the text "in" the textbox
+            svgC.append("text")
+                .attr("x",parseInt(x_r[i]) + 35 + (1*(factor*timsec/60)))
+                .attr("y",parseInt(y_r[i]) + 50 + (1*(factor*timsec/60)))
                 .attr("id","text_box")
                 .text("hello");
-                
-               
+
+            // check for intersection and if two circles are intersecting
+            // will resize so there is no intersection
+            if(checkIntersecting()) {
+                scaleDown(participantTimeOriginal, circleData, factor);
             }
         }
-		// Remove the text box for use with other transcript elements 
-       function previously_remove(svgC)
-       {
-            svgC.select("#rect_box").remove();
-            svgC.select("#text_box").remove();    
-       }
-        // function will be passed the amount of time someone spoke in seconds
-        // and change the size of the node proportionally to the amount
-        // of time
-        // function will also be passed id of person who spoke
 
-        function remPreviouslySpoke(data, i) {
+        // function removes the textbox and transcript
+        // as well as the highlighted ring
+        function removePrev(svgC, i) {
+            svgC.select("#rect_box").remove();
+            svgC.select("#text_box").remove();
+
             data[i].style("stroke", "black");
             data[i].style("stroke-width", "1px");
         }
-       
-        function timeSpoke(timsec, data,i,ret) 
-        {
-            participantTimeOriginal[i]+= timsec;
-            var rad = parseInt(data[i].attr("r"));
-            // increase one unit of radius every minute
-            // every second then increases 1/60th of a unit, slow progression
-            // assuming all individual conversation snippets do not exceed 15-20 seconds??
-            data[i].attr("r", (rad + 1*(ret*timsec/60) ));
-            // check if intersecting after increasing the sizes
-            // OR can check if increasing the size will cause intersection?
-            // if so, scale everything down
-            var intersecting = checkIntersecting();
 
-            if(intersecting) {
-                scaleDown(participantTimeOriginal, circleData, ret);
-            }
-        }
-
-        function scaleDown(originalData,circles, ret) {
+        function scaleDown(originalData,circles, fac) {
             var newData = [];
             var minData = d3.min(originalData);
             var maxData = d3.max(originalData);
 
             for(var i = 0; i < originalData.length; i++) {
                 newData[i] = originalData[i] * .5;
-                circles[i].attr("r", (25 + 1*(ret*newData[i]/60)));
+                circles[i].attr("r", (25 + 1*(fac*newData[i]/60)));
             }
     
             participantTimeChanging = newData;
