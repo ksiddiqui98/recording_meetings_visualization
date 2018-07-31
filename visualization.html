@@ -31,13 +31,13 @@
         // will read from Json file
         var numParticipants = 6;
         var participantSpeak = [];
-        var participantTime = [];
-        var participantColor = [];
+        var participantTimeOriginal = [];
+        var participantTimeChanging = [];
         var k, i;
         for(k = 0; k < numParticipants; k++){
             participantSpeak[k] = 0;
-            participantTime[k] = 0;
-            participantColor[k] = 0;
+            participantTimeOriginal[k] = 0;
+            participantTimeChanging[k] = 0;
         }
         // array of circles
         var circleData = [];
@@ -66,7 +66,7 @@
                             .interpolate(d3.interpolateHcl)
                             .range([d3.rgb("#FFFFFF"), d3.rgb('#191970')])
         // controls radius of circle the nodes are around
-        var radius = 150;
+        var radius = 200;
         // creates container that the nodes are in with specific attributes
         var svgContainer = d3.select("body")
                             .append("svg")
@@ -94,7 +94,7 @@
                                 .style("fill",colors(0))
                                 .style("outline", "black")
                                 .on("mouseover", function(d, id) {
-                                    return tooltip.text("Times Spoken: " + parseInt(participantSpeak[id]) + " Total Time: "  + parseInt(participantTime[i]))
+                                    return tooltip.text("Times Spoken: " + parseInt(participantSpeak[id]) + " Total Time: "  + parseInt(participantTimeOriginal[id]) + " seconds")
                                                 .style("visibility", "visible");
                                 })
                                 .on("mousemove", function() {
@@ -118,7 +118,7 @@
                                 .attr("fill", "black")
                                 .attr("text-anchor", "middle")
                                 .on("mouseover", function(d, id) {
-                                    return tooltip.text("Times Spoken: " + parseInt(participantSpeak[id]) + " Total Time: " + parseInt(participantTime[i]))
+                                    return tooltip.text("Times Spoken: " + parseInt(participantSpeak[id]) + " Total Time: " + parseInt(participantTimeOriginal[id]) + " seconds")
                                                 .style("visibility", "visible");
                                 })
                                 .on("mousemove", function() {
@@ -172,24 +172,24 @@
         previously(circleData, svgContainer, x_1,y_1,1);
         previously_remove(svgContainer);
         remPreviouslySpoke(circleData, 1);
-        // previously(circleData, svgContainer, x_1,y_1,3);
-        // previously_remove(svgContainer);
-        // remPreviouslySpoke(circleData, 3);
+        previously(circleData, svgContainer, x_1,y_1,3);
+        previously_remove(svgContainer);
+        remPreviouslySpoke(circleData, 3);
         previously(circleData, svgContainer, x_1,y_1,2);
         previously_remove(svgContainer);
         remPreviouslySpoke(circleData, 2);
         previously(circleData, svgContainer, x_1,y_1,0);
         previously_remove(svgContainer);
         remPreviouslySpoke(circleData, 0);
-        // previously(circleData, svgContainer, x_1,y_1,5);
-        // previously_remove(svgContainer);
-        // remPreviouslySpoke(circleData, 5);
-        // previously(circleData, svgContainer, x_1,y_1,3);
-        // previously_remove(svgContainer);
-        // remPreviouslySpoke(circleData, 3);
-        // previously(circleData, svgContainer, x_1,y_1,3);
-        // previously_remove(svgContainer);
-        // remPreviouslySpoke(circleData, 3);
+        previously(circleData, svgContainer, x_1,y_1,5);
+        previously_remove(svgContainer);
+        remPreviouslySpoke(circleData, 5);
+        previously(circleData, svgContainer, x_1,y_1,3);
+        previously_remove(svgContainer);
+        remPreviouslySpoke(circleData, 3);
+        previously(circleData, svgContainer, x_1,y_1,3);
+        previously_remove(svgContainer);
+        remPreviouslySpoke(circleData, 3);
 
 
 
@@ -202,12 +202,11 @@
                 data[i].style("stroke", "red")
                         .style("stroke-width", "10px");
             participantSpeak[i]++;
-            participantColor[i]++;
             // var default_scale = d3.scaleQuantize().domain([0, 50]).range(['white','gray']);
             // syntax as seen on http://jonathansoma.com/tutorials/d3/color-scale-examples/
 		    // A simple color scale created using quantization over 50 values, representing the scale going from blue to red
 		    // TODO: Different nodes will have different color scales??
-            data[i].style("fill",colors(participantColor[i]));
+            data[i].style("fill",colors(participantSpeak[i]));
             
             }
         }
@@ -274,7 +273,7 @@
        
         function timeSpoke(timsec, data,i,ret) 
         {
-            participantTime[i]+= timsec;
+            participantTimeOriginal[i]+= timsec;
             var rad = parseInt(data[i].attr("r"));
             // increase one unit of radius every minute
             // every second then increases 1/60th of a unit, slow progression
@@ -286,7 +285,7 @@
             var intersecting = checkIntersecting();
 
             if(intersecting) {
-                scaleDown(participantTime, circleData, ret);
+                scaleDown(participantTimeOriginal, circleData, ret);
             }
         }
 
@@ -299,8 +298,8 @@
                 newData[i] = originalData[i] * .5;
                 circles[i].attr("r", (25 + 1*(ret*newData[i]/60)));
             }
-            
-            participantTime = newData;
+    
+            participantTimeChanging = newData;
         }
 
         // http://www.inkfood.com/collision-detection-with-svg/
@@ -325,3 +324,4 @@
     </script>
     
 </body>
+
