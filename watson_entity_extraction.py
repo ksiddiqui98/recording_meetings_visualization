@@ -172,15 +172,15 @@ def gen_vis(data):
     #                         i+=1
     #                         categories[current[0]] = {names: i}
 
-    for cat in cats:
+    #for cat in cats:
 
-        print(c)
-
-
+        #print(c)
 
 
 
-    print(categories)
+
+
+    #print(categories)
     output = open(outputFile, "w")
     output.write(json.dumps(results, indent=2))
 
