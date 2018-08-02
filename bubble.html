@@ -63,29 +63,29 @@
                 .size([diameter - margin, diameter - margin])
                 .padding(2);
 
-    // function loadJSON() {
-    //     var http_request = new XMLHttpRequest();
-    //     try {
-    //         // Opera 8.0+, Firefox, Chrome, Safari
-    //         http_request = new XMLHttpRequest();
-    //     } catch(e) {
-    //         // Internet Explorer Browsers
-    //         try {
-    //             http_request = new ActiveXObject("Msxml2.XMLHTTP");
-    //         } catch(e) {
-    //             try {
-    //                 http_request = new ActiveXObject("Microsoft.XMLHTTP");
-    //             } catch(e) {
-    //                 // Something went wrong
-    //                 alert("Your browser broke!");
-    //                 return false;
-    //             }
-    //         }
-    //     }
+    function loadJSON() {
+        var http_request = new XMLHttpRequest();
+        try {
+            // Opera 8.0+, Firefox, Chrome, Safari
+            http_request = new XMLHttpRequest();
+        } catch(e) {
+            // Internet Explorer Browsers
+            try {
+                http_request = new ActiveXObject("Msxml2.XMLHTTP");
+            } catch(e) {
+                try {
+                    http_request = new ActiveXObject("Microsoft.XMLHTTP");
+                } catch(e) {
+                    // Something went wrong
+                    alert("Your browser broke!");
+                    return false;
+                }
+            }
+        }
 
-    //     http_request.onreadystatechange = function() {
-            // if(this.readyState == 4 && this.status == 200) {
-                var jsonObj = JSON.parse("sample-example.json");
+        http_request.onreadystatechange = function() {
+            if(this.readyState == 4 && this.status == 200) {
+                var jsonObj = JSON.parse(this.responseText);
 
                 console.log(jsonObj);
 
@@ -145,20 +145,17 @@
                     node.attr("transform", function(d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
                     circle.attr("r", function(d) { return d.r * k; });
                 }
+            }
+        }
+    }
 
+    function startVis() {
+        var inter = setInterval(function() {
+            loadJSON();
+        }, 5000);
+    }
 
-
-            // }
-        // }
-    // }
-
-    // function startVis() {
-    //     var inter = setInterval(function() {
-    //         loadJSON();
-    //     }, 5000);
-    // }
-
-    // startVis();
+    startVis();
 
 
     </script>
