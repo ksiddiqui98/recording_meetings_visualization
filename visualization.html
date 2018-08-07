@@ -49,7 +49,7 @@
         {speech:"this is a test",time:2,userID:0},
         {speech:"This is a test but this needs to be something long",time:5,userID:1},
         {speech:"The test string is a good thing to use for development",time:6,userID:2},
-        {speech:"A complex sentence is a sentence that contains an independent clause and one or more dependent clauses. An independent clause can stand alone as a sentence, but a dependent clause even though it has a subject and a verb cannot stand alone.",time:10,userID:1},
+        {speech:"A complex sentence is a sentence that contains an independent clause and one or more dependent clauses. An independent clause can stand alone as a sentence, but a dependent clause even though it has a subject and a verb cannot stand alone.",time:40,userID:1},
         {speech:"JavaScript also defines two trivial data types, null and undefined, each of which defines only a single value. In addition to these primitive data types, JavaScript supports a composite data type known as object. We will cover objects in detail in a separate chapter. Note − JavaScript does not make a distinction between integer values and floating-point values. All numbers in JavaScript are represented as floating-point values. JavaScript represents numbers using the 64-bit floating-point format defined by the IEEE 754 standard.",time:15,userID:1},
         {speech:"Now, imagine the challenge for Facebook. Facebook deals with enormous amount of text data on a daily basis in the form of status updates, comments etc. And it is all the more important for Facebook to utilise this text data to ",time:4,userID:3},
         {speech:"This library has gained a lot of traction in the NLP community and is a possible substitution to the gensim ",time:2,userID:4},
@@ -70,13 +70,16 @@
         var diameter = 760;
         // controls the number of nodes
         // will read from Json file
-        var numParticipants = 6;
         var participantSpeak = [];
         var participantTime = [];
         var timeSpoken = test_data.map(tra => tra.time);
         var userID_test = test_data.map(tra => tra.userID);
+        var numParticipants = Math.max(...userID_test) + 1;
         var contsignal = true;
-        
+        var scale_arr = [];
+        var scale_factor = 0.89;
+        var activate_overlap_detection = false;
+      
         var currentSpeaker = [];
         var previousSpeaker = [];
         
@@ -134,6 +137,7 @@
         //for(ui = 0; ui < total_time_num; ui++ ) {uid_labels[ui] = }
       
         var rad_mat = math.zeros(numParticipants,time_values.length),color_mat = math.zeros(numParticipants,time_values.length), curr_mat = math.zeros(numParticipants,time_values.length),prev_mat = math.zeros(numParticipants,time_values.length);
+
       
         generate_data(100);
       
@@ -195,14 +199,34 @@
              rad_mat.subset(math.index(k,t),(radius + 1*(ret*(get_t_upto_curr_time(t,k)/60))));
           //rad_mat.subset(math.index(userID_test[labels[t]],t),(radius + 1*(ret*(get_sp_upto_curr_time(t,userID_test[labels[t]])/60))));
             // rad_mat[test_data[labels[t]].userID][t] = radius + 1*(ret*(t/60));
-             color_mat.subset(math.index(k,t),colors(get_sp_upto_curr_time(t,k)));   
+             color_mat.subset(math.index(k,t),colors(get_sp_upto_curr_time(t,k)));
           // color_mat.subset(math.index(userID_test[labels[t]],t),colors(search_for_instances(time_acc,t,userID_test[labels[t]]))); 
           // color_mat[test_data[labels[t]].userID][t] = color(search_for_instances(time_acc,t,test_data[labels[t]].userID));     
         }
       } 
+       
+        if(activate_overlap_detection)
+           {
         
+        for(t = 0; t < total_time_num; t++)
+          {
+        for(var i = 0; i < numParticipants; i++)
+          {
+            for(var j = 0; j < numParticipants; j++)
+            {
+              if(i == j)
+              {continue;}
+              
+             if( (rad_mat.subset(math.index(i,t)) + rad_mat.subset(math.index(j,t))) > dist_calc(i,j) ) // overlap!
+             {
+             update_scale(t);
+             }
+            }      
+          }
+        }
       }
-      
+      }
+
       function print_all_figures(t)
       {
           if(t == total_time_num || t == 0)
@@ -508,6 +532,26 @@
         // and change the size of the node proportionally to the amount
         // of time
         // function will also be passed id of person who spoke
+      
+      
+      
+      function update_scale(scale_pos)
+      {
+      
+        for(var k = scale_pos; k < total_time_num; k++ )
+        {
+          for(var p = 0; p < numParticipants; p++)
+              {
+              rad_mat.subset(math.index(p,k),parseInt(rad_mat.subset(math.index(p,k)))*scale_factor);
+              }
+        }
+        
+      }
+      
+      function dist_calc(I,J)
+      {
+      return Math.sqrt( Math.pow(parseFloat(circleData[I].attr("cx")) - parseFloat(circleData[J].attr("cx")) ,2) + Math.pow( parseFloat(circleData[I].attr("cy")) - parseFloat(circleData[J].attr("cy")) ,2) );      
+      }
       
       function reduction(val,ele)
       {return val+ele;}
