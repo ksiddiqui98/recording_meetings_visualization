@@ -271,16 +271,16 @@
         }
 
         // http://www.inkfood.com/collision-detection-with-svg/
+        // https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
         function checkIntersecting() {
             for(var i = 0; i < numParticipants; i++) {
                 for(var j = 0; j < numParticipants; j++) {
                     if(i == j) { continue; }
-                    var bounding1 = document.getElementById(i).getBoundingClientRect();
-                    var bounding2 = document.getElementById(j).getBoundingClientRect();
-                    if(!(bounding2.left > bounding1.right || 
-                        bounding2.right < bounding1.left || 
-                        bounding2.top > bounding1.bottom ||
-                        bounding2.bottom < bounding1.top)) {
+                    var distX = Math.abs(circleData[i].attr("cx") - circleData[j].attr("cx")) - 5;
+                    var distY = Math.abs(circleData[i].attr("cy") - circleData[j].attr("cy")) - 5;
+                    var distance = Math.abs(Math.sqrt((distX * distX) + (distY * distY)));
+                    var sum = parseInt(circleData[i].attr("r")) + parseInt(circleData[j].attr("r"));
+                    if(distance < sum) {
                         return true;
                     }
                 }
