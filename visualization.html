@@ -24,9 +24,8 @@
         // ourRequest.onload = function(){
         //     var RAWJSON_INFO=JSON.parse(ourRequest.responseText);
         // arbitrarily sets width, height, and diameter
-        var width = 770;
-        var height = 940;
-        var diameter = 760;
+        var width = 750;
+        var height = 750;
         // controls the number of nodes
         // will read from Json file
         var numParticipants = 6;
@@ -41,6 +40,7 @@
         }
         // array of circles
         var circleData = [];
+        var mouseoverData = [];
         var angle = 0;
         var x = 0;
         var x_1 = [];
@@ -70,9 +70,23 @@
         // creates container that the nodes are in with specific attributes
         var svgContainer = d3.select("body")
                             .append("svg")
-                            .attr("width", 750)
-                            .attr("height", 750)
+                            .attr("width", width)
+                            .attr("height", height)
                             .style("border", "1px solid black");
+
+
+        // for(var i = 0; i < numParticipants; i++) {
+        //     var obj = {
+        //         "id": i.toString(),
+        //         "label": alpha[i],
+        //         "participantSpeak": 0,
+        //         "participantTimeTotal": 0,
+        //         "participantTimeTemp": 0
+        //     };
+
+        //     mouseoverData.push(obj);
+        // }
+        
         // loops through for each participant and creates a node
         // and evenly spaces the nodes around the circle
         // in the future will use location data from Json to place people (Will need to generate relative coordinates in 2D unless the visualization is done in 3D)
@@ -93,8 +107,8 @@
                                 .style("stroke", "black")
                                 .style("fill",colors(0))
                                 .style("outline", "black")
-                                .on("mouseover", function(d, id) {
-                                    return tooltip.text("Times Spoken: " + parseInt(participantSpeak[id]) + " Total Time: "  + parseInt(participantTimeOriginal[id]) + " seconds")
+                                .on("mouseover", function(d) {
+                                    return tooltip.text("Times Spoken: " + " Total Time: "  + " seconds")
                                                 .style("visibility", "visible");
                                 })
                                 .on("mousemove", function() {
@@ -106,19 +120,19 @@
                                 })
             
             circleData.push(circle);
-
             var id = parseInt(circleData[i].attr("id"));
 
             var text = svgContainer.append("text")
                                 .attr("x", x)
                                 .attr("y", y + 6)
                                 .text(alpha[id])
+                                .attr("id", "label")
                                 .attr("font-family", "san-serif")
                                 .attr("font-size", "20px")
                                 .attr("fill", "black")
                                 .attr("text-anchor", "middle")
-                                .on("mouseover", function(d, id) {
-                                    return tooltip.text("Times Spoken: " + parseInt(participantSpeak[id]) + " Total Time: " + parseInt(participantTimeOriginal[id]) + " seconds")
+                                .on("mouseover", function(d) {
+                                    return tooltip.text("Times Spoken: "  + " Total Time: " + " seconds")
                                                 .style("visibility", "visible");
                                 })
                                 .on("mousemove", function() {
@@ -131,9 +145,18 @@
                
             
         }
+        
+        var trans = "Hello, my name is Zhao";
+        var newTrans = wrapText(trans, 10);
 
-        
-        
+        function currently(i, timsec) {
+            participantSpeak[i]++;
+            participantTimeOriginal[i]+= timsec;
+          
+            circleData[i].style("stroke","red")
+                        .style("stroke-width", "5px");            
+        }
+
         // function  highlights circle, expands the radius,
         // changes the color, and shows the transcript
         // make sure to check for collisions
@@ -143,8 +166,9 @@
         // time spoke in seconds, and scaling factor
         // scaling factor currently arbitrarily 10
         function previously(svgC, x_r, y_r, i, timsec, factor) {
+            // increases the number of times the person spoke
             participantSpeak[i]++;
-
+            // changes the shade of the fill by 1 on the color scale
             circleData[i].style("fill", colors(participantSpeak[i]));
             // highlights circle with light pink ring to
             // incidate that the person had just spoken
@@ -179,12 +203,47 @@
                 .attr("x",parseInt(x_r[i]) + 35 + (1*(factor*timsec/60)))
                 .attr("y",parseInt(y_r[i]) + 50 + (1*(factor*timsec/60)))
                 .attr("id","text_box")
-                .text("hello");
+                .text(newTrans);
 
             // check for intersection and if two circles are intersecting
             // will resize so there is no intersection
             if(checkIntersecting()) {
                 scaleDown(participantTimeOriginal, circleData, factor);
+                if(checkIntersecting()) {
+                    var newRad = 1.1 * radius;
+                    radius = newRad;
+                    svgContainer.selectAll("#label").remove();
+                    for(var i = 0; i < numParticipants; i++) {
+                        angle = (i / (numParticipants/2)) * Math.PI;
+                        x = (radius * Math.cos(angle)) + (width/2);
+                        y = (radius * Math.sin(angle)) + (width/2);
+                        x_1.push( ((radius+8) * Math.cos(angle)) + (width/2) );
+                        y_1.push( ((radius+8) * Math.sin(angle)) + (width/2) );
+                        circleData[i].attr("cx", x)
+                                    .attr("cy", y);
+                        
+                        var text = svgContainer.append("text")
+                            .attr("x", x)
+                            .attr("y", y + 6)
+                            .text(alpha[i])
+                            .attr("id", "label")
+                            .attr("font-family", "san-serif")
+                            .attr("font-size", "20px")
+                            .attr("fill", "black")
+                            .attr("text-anchor", "middle")
+                            .on("mouseover", function(d) {
+                                return tooltip.text("Times Spoken: "  + " Total Time: " + " seconds")
+                                            .style("visibility", "visible");
+                            })
+                            .on("mousemove", function() {
+                                return tooltip.style("top", (d3.event.pageY-10)+"px")
+                                            .style("left",(d3.event.pageX+10)+"px");
+                            })
+                            .on("mouseout", function() {
+                                return tooltip.style("visibility", "hidden");
+                            })
+                        }
+                }
             }
         }
 
@@ -194,8 +253,8 @@
             svgC.select("#rect_box").remove();
             svgC.select("#text_box").remove();
 
-            data[i].style("stroke", "black");
-            data[i].style("stroke-width", "1px");
+            circleData[i].style("stroke", "black");
+            circleData[i].style("stroke-width", "1px");
         }
 
         function scaleDown(originalData,circles, fac) {
@@ -204,10 +263,10 @@
             var maxData = d3.max(originalData);
 
             for(var i = 0; i < originalData.length; i++) {
-                newData[i] = originalData[i] * .5;
+                newData[i] = originalData[i] * .25;
+                console.log(newData[i]);
                 circles[i].attr("r", (25 + 1*(fac*newData[i]/60)));
             }
-    
             participantTimeChanging = newData;
         }
 
@@ -227,6 +286,31 @@
                 }
             } 
             return false;
+        }
+
+        function wrapText(transcript, width) {
+            var stringArray = transcript.split(" ");
+            var newString = "";
+            console.log(stringArray);
+            var currentLine = 0;
+            var numLines = 1;
+            for(var i = 0; i < stringArray.length; i++) {
+                console.log(stringArray[i].length);
+
+                if((stringArray[i].length + currentLine + 1) < width) {
+                    currentLine += stringArray[i].length;
+                    newString += (stringArray[i] + " ");
+                }
+                else if((stringArray[i].length + currentLine + 1) > width) {
+                    newString += ("\n");
+                    numLines++;
+                    currentLine = 0;
+                    newString+= (stringArray[i] + " ");
+                    currentLine += stringArray[i].length;
+                }
+            }
+            console.log(newString);
+            return newString;
         }
 
         // ourRequest.send();
