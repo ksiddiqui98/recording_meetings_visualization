@@ -126,6 +126,7 @@
                             .attr("width", 750)
                             .attr("height", 750)
                             .style("border", "1px solid black");
+      
         get_curr_speaking();
         initial_draw(svgContainer,numParticipants,circleData);
         
@@ -318,7 +319,17 @@
                                 .attr("id", i)
                                 .style("stroke", "black")
                                 .style("fill",colors(0))
-                                .style("padding", 2);
+                                .style("padding", 2)
+                                .on("mouseover", function() {
+                                    return tooltip.text("Times Spoken: " + 0 + " Total Time: "  + 0).style("visibility", "visible");
+                                })
+                                .on("mousemove", function() {
+                                    return tooltip.style("top", (d3.event.pageY-10)+"px")
+                                                .style("left",(d3.event.pageX+10)+"px");
+                                })
+                                .on("mouseout", function() {
+                                    return tooltip.style("visibility", "hidden");
+                                });
             
             circleData.push(circle);
 
@@ -332,7 +343,17 @@
                                 .attr("font-family", "san-serif")
                                 .attr("font-size", "20px")
                                 .attr("fill", "black")
-                                .attr("text-anchor", "middle")              
+                                .attr("text-anchor", "middle")
+                                .on("mouseover", function() {
+                                    return tooltip.text("Times Spoken: " + 0 + " Total Time: "  + 0).style("visibility", "visible");
+                                })
+                                .on("mousemove", function() {
+                                    return tooltip.style("top", (d3.event.pageY-10)+"px")
+                                                .style("left",(d3.event.pageX+10)+"px");
+                                })
+                                .on("mouseout", function() {
+                                    return tooltip.style("visibility", "hidden");
+                                });;
             
         }
 
@@ -511,26 +532,44 @@
           var x_r = parseInt(circleData[i].attr("cx"));
           var y_r = parseInt(circleData[i].attr("cy"));
                
-                 svgContainer.append("rect")
-                .attr("x", parseInt(x_r) + 30)
-                .attr("y", parseInt(y_r) + 30)
-                .attr("rx",10)
-                .attr("ry",10)
-                .attr("id","rect_box")
-                .attr("width", 100)
-                .attr("height", 30)
-                .attr("stroke","black")
-                .attr("fill","none")
-                .attr("id","rect_box")
-                .attr("border", "1px solid black");
+                //  svgContainer.append("rect")
+                // .attr("x", parseInt(x_r) + 30)
+                // .attr("y", parseInt(y_r) + 30)
+                // .attr("rx",10)
+                // .attr("ry",10)
+                // .attr("id","rect_box")
+                // .attr("width", 100)
+                // .attr("height", 30)
+                // .attr("stroke","black")
+                // .attr("fill","none")
+                // .attr("id","rect_box")
+                // .attr("border", "1px solid black");
+          
+                  var multi_lines=format_text(svgContainer,test_data[i].speech,25,parseInt(x_r) + 35,parseInt(y_r) + 50);
+
+                  svgContainer.append("rect")
+                  .attr("x", parseInt(x_r) + 30)
+                  .attr("y", parseInt(y_r) + 30)
+                  .attr("rx",10)
+                  .attr("ry",10)
+                  .attr("id","rect_box")
+                  .attr("width", 180)
+                  .attr("height", 30+15*(multi_lines-1))
+                  .attr("stroke","black")
+                  .attr("fill","none")
+                  .attr("id","rect_box")
+                  .attr("border", "1px solid black");
+
+
+                // svgContainer.append("text")
+                // .attr("x",parseInt(x_r) + 35)
+                // .attr("y",parseInt(y_r) + 50)
+                // //.style("font-size", function(m,n){ var bbox = this.getBBox(); var cbbox = this.parentNode.getBBox(); var scale = Math.min(cbbox.width/bbox.width, cbbox.height/bbox.height); m.scale = scale; return (m.scale  + "px"); })
+                // //.style("fill", "black")
+                // .attr("id","text_box")
+                // .text(test_data[i].speech);
                 
-                
-                svgContainer.append("text")
-                .attr("x",parseInt(x_r) + 35)
-                .attr("y",parseInt(y_r) + 50)
-                .attr("id","text_box")
-                .text(test_data[i].speech);
-                
+                //tooltip.text("heeheehaahaa").style("visibility", "visible");
                
         
         }
@@ -539,7 +578,7 @@
        function previously_remove()
        {
             svgContainer.select("#rect_box").remove();
-            svgContainer.select("#text_box").remove();    
+            svgContainer.selectAll("#text_box").remove();    
        }
         // function will be passed the amount of time someone spoke in seconds
         // and change the size of the node proportionally to the amount
@@ -568,6 +607,33 @@
       
       function reduction(val,ele)
       {return val+ele;}
+      
+    function format_text(object,sentences,width,x,y)
+      {
+    var words = sentences.split(" ");
+    var containers=[];
+    for(var i=0;i<words.length;i){
+        var temp = "";
+        while (temp.length<width && i<words.length){
+            if(temp.length==0){
+                temp+=words[i];
+                i++;
+            }else if(!(temp.length+1+words[i].length>width)){
+                temp+=" ";
+                temp+=words[i];
+                i++;
+            }
+            if(i>=words.length ||temp.length+1+words[i].length>width){
+                break;
+            }
+        }
+        containers.push(temp);
+    }
+    for(var i=0; i<containers.length;i++){
+        object.append("text").attr("x",x).attr("y",y+i*15).attr("text-anchor","beginning").attr("id","text_box").text(containers[i]);
+    }
+    return containers.length;
+}
       
         // ourRequest.send();
     </script>
