@@ -20,3 +20,4 @@ Brainstorming/Suggestions:
 3. Ideas for representing the head pose
 4. Ideas for indicating who has spoke the least
       Possibly based on amount of time as that is a better indicator of participation
+5. Think about ways we could link information from one visualization to the other
