@@ -1,0 +1,22 @@
+PRIORITY:
+Work with lunar landing data to get ready for demo —> have visualizations ready with lunar landing data for meeting on Monday
+
+To do:
+1. Choose new color scheme for bubbles
+2. Decide if we want to keep the current layout or consider changing it to fit our future needs
+        Check out original visualizations brainstorm slide show and decide
+        Hui suggested changing the color for how long they speak and increase the width of the outline stroke for the number of times they spoke
+              Would eliminate need to resize bubbles (most likely)
+3. Have an indicator of the person who has spoken the least in the meeting
+        A way to have the visualization make a “suggestion” to balance the meeting
+4. Find a way to show multi-modal part of spatial context
+        Create a head pose indicator using arrows
+        Find a way to show where on the screen people are looking (using gaze pixel location)
+              Junjie is working on this, we may just want to find a way to incorporate it into the visualization
+
+Brainstorming/Suggestions:
+1. Changes to visualization keeping in mind adding spatial data as well as dialogue acts
+2. As adding dialogue act incorporation will happen soon, brainstorm more ways we may be able to represent these dialogue acts in the Level 2 visualization, possibly both visualizations
+3. Ideas for representing the head pose
+4. Ideas for indicating who has spoke the least
+      Possibly based on amount of time as that is a better indicator of participation
