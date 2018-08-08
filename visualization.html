@@ -67,9 +67,8 @@
         
         // NOTE: Assuming no new users suddenly join in, focusing on getting a simple functionality working
         
-        var width = 770;
-        var height = 940;
-        var diameter = 760;
+        var width = 750;
+        var height = 750;
         // controls the number of nodes
         // will read from Json file
         var participantSpeak = [];
@@ -123,8 +122,8 @@
         // creates container that the nodes are in with specific attributes
         var svgContainer = d3.select("body")
                             .append("svg")
-                            .attr("width", 750)
-                            .attr("height", 750)
+                            .attr("width", width)
+                            .attr("height", height)
                             .style("border", "1px solid black");
       
         get_curr_speaking();
@@ -152,7 +151,7 @@
           .min(0)
           .max(total_time_num-1)
           .step(1)
-          .width(1100)
+          .width(700)
           .on('onchange', slider_value => {
             print_all_figures(slider_value);
           });
