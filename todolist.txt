@@ -13,6 +13,7 @@ To do:
         Create a head pose indicator using arrows
         Find a way to show where on the screen people are looking (using gaze pixel location)
               Junjie is working on this, we may just want to find a way to incorporate it into the visualization
+5. Fix placement of textboxes so they don't overlap with other elements
 
 Brainstorming/Suggestions:
 1. Changes to visualization keeping in mind adding spatial data as well as dialogue acts
