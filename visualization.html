@@ -71,6 +71,7 @@
         // controls the number of nodes
         // will read from Json file
         var participantSpeak = [];
+        var participantS = []
         var participantTime = [];
         var timeSpoken = test_data.map(tra => tra.time);
         var userID_test = test_data.map(tra => tra.userID);
@@ -78,10 +79,11 @@
         var contsignal = true;
         var scale_arr = [];
         var scale_factor = 0.89;
-        var activate_overlap_detection = false;
+        var activate_overlap_detection = true;
       
         var currentSpeaker = [];
         var previousSpeaker = [];
+        var global_time = 0;
         
         // Although we can determine the number of times someone spoke from the test data we have, we are assuming that we will be using live data in the end, hence also assuming that we don't have that information at this point
         
@@ -89,6 +91,8 @@
         var k, i;
         for(k = 0; k < numParticipants; k++){
             participantSpeak[k] = 0;
+            participantTime[k] = 0;
+            participantS[k] = 0;
         }
         // array of circles
         var circleData = [];
@@ -229,6 +233,50 @@
 
       function print_all_figures(t)
       {
+
+          svgContainer.selectAll("circle")  
+            .on("mouseover", function(d,id) {
+                                    return tooltip.text("Times Spoken: " + parseInt(get_sp_upto_curr_time(t,id)) + " Total Time: "  + parseInt(get_t_upto_curr_time(t, id)))
+                                                .style("visibility", "visible");
+                                })
+                                .on("mousemove", function() {
+                                    return tooltip.style("top", (d3.event.pageY-10)+"px")
+                                                .style("left",(d3.event.pageX+10)+"px");
+                                })
+                                .on("mouseout", function() {
+                                    return tooltip.style("visibility", "hidden");
+                                });
+
+          svgContainer.selectAll("text")
+            .on("mouseover", function(d,id) {
+                                    return tooltip.text("Times Spoken: " + parseInt(get_sp_upto_curr_time(t,id)) + " Total Time: "  + parseInt(get_t_upto_curr_time(t, id)))
+                                                .style("visibility", "visible");
+                                })
+                                .on("mousemove", function() {
+                                    return tooltip.style("top", (d3.event.pageY-10)+"px")
+                                                .style("left",(d3.event.pageX+10)+"px");
+                                })
+                                .on("mouseout", function() {
+                                    return tooltip.style("visibility", "hidden");
+                                });
+        
+        // for(var ll = 0; ll < numParticipants; ll++)
+        // {
+        // svgContainer.select("#" + ll.toString())
+        //                         .on("mouseover", function() {
+        //                             return tooltip.text("Times Spoken: " + parseInt(get_sp_upto_curr_time(t,ll)) + " Total Time: "  + parseInt(get_sp_upto_curr_time(t,ll)))
+        //                                         .style("visibility", "visible");
+        //                         })
+        //                         .on("mousemove", function() {
+        //                             return tooltip.style("top", (d3.event.pageY-10)+"px")
+        //                                         .style("left",(d3.event.pageX+10)+"px");
+        //                         })
+        //                         .on("mouseout", function() {
+        //                             return tooltip.style("visibility", "hidden");
+        //                         })
+        // }
+        
+        
           if(t == total_time_num || t == 0)
           {
           previously_remove();
@@ -283,18 +331,7 @@
                                 .attr("id", i)
                                 .style("stroke", "black")
                                 .style("fill",colors(0))
-                                .style("padding", 2)
-                                .on("mouseover", function(d, id) {
-                                    return tooltip.text("Times Spoken: " + parseInt(participantSpeak[id]) + " Total Time: "  + parseInt(participantTime[i]))
-                                                .style("visibility", "visible");
-                                })
-                                .on("mousemove", function() {
-                                    return tooltip.style("top", (d3.event.pageY-10)+"px")
-                                                .style("left",(d3.event.pageX+10)+"px");
-                                })
-                                .on("mouseout", function() {
-                                    return tooltip.style("visibility", "hidden");
-                                })
+                                .style("padding", 2);
             
             circleData.push(circle);
 
@@ -304,22 +341,11 @@
                                 .attr("x", x)
                                 .attr("y", y + 6)
                                 .text(alpha[id])
+                                .attr("id",i.toString())
                                 .attr("font-family", "san-serif")
                                 .attr("font-size", "20px")
                                 .attr("fill", "black")
-                                .attr("text-anchor", "middle")
-                                .on("mouseover", function(d, id) {
-                                    return tooltip.text("Times Spoken: " + parseInt(participantSpeak[id]) + " Total Time: " + parseInt(participantTime[i]))
-                                                .style("visibility", "visible");
-                                })
-                                .on("mousemove", function() {
-                                    return tooltip.style("top", (d3.event.pageY-10)+"px")
-                                                .style("left",(d3.event.pageX+10)+"px");
-                                })
-                                .on("mouseout", function() {
-                                    return tooltip.style("visibility", "hidden");
-                                })
-               
+                                .attr("text-anchor", "middle")              
             
         }
 
@@ -556,6 +582,15 @@
       function reduction(val,ele)
       {return val+ele;}
       
+      function get_mouse_info(T)
+      {
+        for(var i = 0; i < numParticipants; i++)
+        {
+          participantS[i] = get_sp_upto_curr_time(T,i); 
+          participantTime[i] = get_t_upto_curr_time(T,i);
+        }
+        console.log(participantTime)
+      }
         // ourRequest.send();
     </script>
     
