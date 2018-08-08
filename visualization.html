@@ -224,7 +224,7 @@
               if(i == j)
               {continue;}
               
-             if( (rad_mat.subset(math.index(i,t)) + rad_mat.subset(math.index(j,t))) > dist_calc(i,j) ) // overlap!
+             if( (rad_mat.subset(math.index(i,t)) + rad_mat.subset(math.index(j,t))) + 10 > dist_calc(i,j) ) // overlap!
              {
              update_scale(t);
              }
@@ -239,7 +239,7 @@
 
           svgContainer.selectAll("circle")  
             .on("mouseover", function(d,id) {
-                                    return tooltip.text("Times Spoken: " + parseInt(get_sp_upto_curr_time(t,id)) + " Total Time: "  + parseInt(get_t_upto_curr_time(t, id)))
+                                    return tooltip.text("Times Spoken: " + parseInt(get_sp_upto_curr_time(t,id)) + " times" + " Total Time: "  + parseInt(get_t_upto_curr_time(t, id)) + " seconds")
                                                 .style("visibility", "visible");
                                 })
                                 .on("mousemove", function() {
@@ -252,7 +252,7 @@
 
           svgContainer.selectAll("text")
             .on("mouseover", function(d,id) {
-                                    return tooltip.text("Times Spoken: " + parseInt(get_sp_upto_curr_time(t,id)) + " Total Time: "  + parseInt(get_t_upto_curr_time(t, id)))
+                                    return tooltip.text("Times Spoken: " + parseInt(get_sp_upto_curr_time(t,id)) + " times" + " Total Time: "  + parseInt(get_t_upto_curr_time(t, id)) + " seconds")
                                                 .style("visibility", "visible");
                                 })
                                 .on("mousemove", function() {
@@ -321,7 +321,7 @@
                                 .style("fill",colors(0))
                                 .style("padding", 2)
                                 .on("mouseover", function() {
-                                    return tooltip.text("Times Spoken: " + 0 + " Total Time: "  + 0).style("visibility", "visible");
+                                    return tooltip.text("Times Spoken: " + 0 + " times" + " Total Time: "  + 0 + " seconds").style("visibility", "visible");
                                 })
                                 .on("mousemove", function() {
                                     return tooltip.style("top", (d3.event.pageY-10)+"px")
@@ -345,7 +345,7 @@
                                 .attr("fill", "black")
                                 .attr("text-anchor", "middle")
                                 .on("mouseover", function() {
-                                    return tooltip.text("Times Spoken: " + 0 + " Total Time: "  + 0).style("visibility", "visible");
+                                    return tooltip.text("Times Spoken: " + 0 + " times" + " Total Time: "  + 0 + " seconds").style("visibility", "visible");
                                 })
                                 .on("mousemove", function() {
                                     return tooltip.style("top", (d3.event.pageY-10)+"px")
