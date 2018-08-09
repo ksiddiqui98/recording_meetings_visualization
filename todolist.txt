@@ -8,7 +8,7 @@ To do:
         Hui suggested changing the color for how long they speak and increase the width of the outline stroke for the number of times they spoke (isn't this same as increasing the radius in a way?)
               Would eliminate need to resize bubbles (most likely)
 3. Have an indicator of the person who has spoken the least in the meeting
-        A way to have the visualization make a “suggestion” to balance the meeting
+        A way to have the visualization make a “suggestion” to balance the meeting (Level 2?)
 4. Find a way to show multi-modal part of spatial context
         Create a head pose indicator using arrows
         Find a way to show where on the screen people are looking (using gaze pixel location)
