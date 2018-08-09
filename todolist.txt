@@ -3,10 +3,10 @@ Work with lunar landing data to get ready for demo —> have visualizations read
 (Visualization with this data complete.)
 
 To do:
-1. Choose new color scheme for bubbles (Fixed, only thing that remains is what color you want to pick, I chose red for now)
+1. Choose new color scheme for bubbles (Done, only thing that remains is what color you want to pick, I chose red for now)
 2. Decide if we want to keep the current layout or consider changing it to fit our future needs
         Check out original visualizations brainstorm slide show and decide
-        Hui suggested changing the color for how long they speak and increase the width of the outline stroke for the number of times they spoke (isn't this same as increasing the radius in a way?)
+        Hui suggested changing the color for how long they speak (Done) and increase the width of the outline stroke for the number of times they spoke (isn't this same as increasing the radius in a way?)
               Would eliminate need to resize bubbles (most likely)
 3. Have an indicator of the person who has spoken the least in the meeting (Done, added blinking animation on the person who spoke the least during the meeting)
         A way to have the visualization make a “suggestion” to balance the meeting (Level 2?)
