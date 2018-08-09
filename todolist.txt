@@ -1,5 +1,6 @@
 PRIORITY:
-Work with lunar landing data to get ready for demo —> have visualizations ready with lunar landing data for meeting on Monday
+Work with lunar landing data to get ready for demo —> have visualizations ready with lunar landing data for meeting on Monday.
+(Visualization with this data complete.)
 
 To do:
 1. Choose new color scheme for bubbles (Fixed, only thing that remains is what color you want to pick, I chose red for now)
