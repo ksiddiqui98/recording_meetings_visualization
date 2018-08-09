@@ -2,7 +2,7 @@ PRIORITY:
 Work with lunar landing data to get ready for demo —> have visualizations ready with lunar landing data for meeting on Monday
 
 To do:
-1. Choose new color scheme for bubbles (Fixed, only thing that remains is what color you want)
+1. Choose new color scheme for bubbles (Fixed, only thing that remains is what color you want to pick, I chose red for now)
 2. Decide if we want to keep the current layout or consider changing it to fit our future needs
         Check out original visualizations brainstorm slide show and decide
         Hui suggested changing the color for how long they speak and increase the width of the outline stroke for the number of times they spoke
