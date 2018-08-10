@@ -1,0 +1,829 @@
+<!doctype html>
+<html>
+<title>L1 Visualization</title>
+  
+<head>
+    <meta charset = "utf-8">
+    <style>
+        /* sets the style of the title Meeting Analysis */
+        h1 {
+            font-size: 50px;
+            color: navy;
+            font-family: HelvNeueLightForIBM, Helvetica Neue, Arial, Helvetica, sans-serif;
+            text-align: left;
+        }
+        body {
+            background-color: white;
+        }
+    </style>
+    <title>Visualization</title>
+</head>
+<body>
+  <h1>Meeting Analysis</h1>
+  <h2>Meeting Timeline</h2>
+    <p id="time_value"></p>
+    <div id="time_line"></div>
+  
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://unpkg.com/d3-simple-slider@0.2.1/build/d3-simple-slider.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.0.4/math.js"></script>
+  <script src="https://d3plus.org/js/d3plus.js"></script>
+  <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
+  <script src="https://d3js.org/d3-fetch.v1.min.js"></script>  
+  <script src="math.js" type="text/javascript"></script>
+    <script>
+        // var ourRequest = new XMLHttpRequest();
+        // ourRequest.open('GET', *********FILE_LOCATION***************)
+        // ourRequest.onload = function(){
+        //     var RAWJSON_INFO=JSON.parse(ourRequest.responseText);
+        // arbitrarily sets width, height, and diameter
+        
+        
+        ////////// TODO: Concrete method to read in data
+        
+        //////////////////////////////////////////////////////////////////////////
+        // test_data
+        // Assumption the data is sorted in time! That is, ID 0 happens before ID 1 and so on
+        
+        var test_data = [
+        {speech:"this is a test",time:2,userID:0},
+        {speech:"This is a test but this needs to be something long",time:5,userID:1},
+        {speech:"The test string is a good thing to use for development",time:6,userID:2},
+        {speech:"A complex sentence is a sentence that contains an independent clause and one or more dependent clauses. An independent clause can stand alone as a sentence, but a dependent clause even though it has a subject and a verb cannot stand alone.",time:40,userID:1},
+        {speech:"JavaScript also defines two trivial data types, null and undefined, each of which defines only a single value. In addition to these primitive data types, JavaScript supports a composite data type known as object. We will cover objects in detail in a separate chapter. Note − JavaScript does not make a distinction between integer values and floating-point values. All numbers in JavaScript are represented as floating-point values. JavaScript represents numbers using the 64-bit floating-point format defined by the IEEE 754 standard.",time:15,userID:1},
+        {speech:"Now, imagine the challenge for Facebook. Facebook deals with enormous amount of text data on a daily basis in the form of status updates, comments etc. And it is all the more important for Facebook to utilise this text data to ",time:4,userID:3},
+        {speech:"This library has gained a lot of traction in the NLP community and is a possible substitution to the gensim ",time:2,userID:4},
+        {speech:"low magnitude. But FastText can produce vectors better than random by breaking the above word in chunks and using the vectors for those chunks to create a final vector for the word. In this particular",time:3,userID:5},
+        {speech:"Words in their natural form cannot be used for any Machine Learning task in general. One way to use the words is to transform these words into some representations that capture some attributes of the word. It is analogous",time:3,userID:5},
+        {speech:"This is a test but this needs to be something long",time:10,userID:6},
+        {speech:"Something like this is unecessary.. ",time:10,userID:6}  
+        ];        
+        //////////////////////////////////////////////////////////////////////////
+        
+        //////////////////////////////////////////////////////////////////////////
+        /// TODO: (Not applicable to live data) After reading in data from various files, incorporate in all files into a single variable with all correlated speech and corresponding user ID's (including labeling which user says what and assigning a user id for every user and collecting it all into a variable as seen above), will depend on how we read the data, person by person? that is data comes in one person at a time? or multiple entries of people?
+        
+        // For now assuming implementing for one person at a time, that is, records of two people kept, the one who is speaking and the one who was previously speaking. The number of people is assumed to be known. The other data like the times someone spoke is accumulated though.
+        
+        // NOTE: Assuming no new users suddenly join in, focusing on getting a simple functionality working
+        
+        // var test_data = d3.json("Speech_Data.json");
+      //  var test_data = speech_data;
+      
+      
+      
+      
+      
+      
+      
+      
+      
+// var speech_data = 
+// [{"_id":{"$oid":"5b6b3e702d296da484d77287"},"speech":"Stellar map because it is much different from earth and it's a two hundred mile trip. ","time":{"$numberDouble":"17.645792722702026"},"userID":{"$numberInt":"0"},"location":[{"$numberDouble":"-0.8267733147006124"},{"$numberDouble":"0.3624002645247594"},{"$numberDouble":"0.17993020065354282"}],"ID":{"$oid":"5b5f9595b3b55c557c1d06d6"},"confidence":{"$numberDouble":"0.9885515681084996"},"name":"Gaurav"},
+// {"_id":{"$oid":"5b6b3e702d296da484d77288"},"speech":"And the other one is the style of map. So first you pull out the stellar map and you find out the direction you're going and then you jump up. ","time":{"$numberDouble":"16.690349340438843"},"userID":{"$numberInt":"2"},"location":[{"$numberDouble":"0.7418094603290133"},{"$numberDouble":"0.39778979459821107"},{"$numberDouble":"0.8893028313451093"}],"ID":{"$oid":"5b5f95cab3b55c557c1d2d03"},"confidence":{"$numberDouble":"0.9911173542095242"},"name":"Jingfei"},
+// {"_id":{"$oid":"5b6b3e702d296da484d77289"},"speech":"Any high because it's a moon and then you open up the oxygen tank and release the gas to the opposite direction. ","time":{"$numberDouble":"17.74951410293579"},"userID":{"$numberInt":"2"},"location":[{"$numberDouble":"0.728830996798848"},{"$numberDouble":"0.394327175534969"},{"$numberDouble":"0.8797435054695942"}],"ID":{"$oid":"5b5f95d4b3b55c557c1d33b3"},"confidence":{"$numberDouble":"0.9897540233344333"},"name":"Jingfei"},
+// {"_id":{"$oid":"5b6b3e702d296da484d7728a"},"speech":"","time":{"$numberDouble":"-1532990941.2851865"},"userID":{"$numberInt":"2"},"location":[{"$numberDouble":"0.7617214424487553"},{"$numberDouble":"0.4098536412176348"},{"$numberDouble":"0.9107375958105512"}],"ID":{"$oid":"5b5f95ddb3b55c557c1d3a47"},"confidence":{"$numberDouble":"0.986261189343819"},"name":"Jingfei"},
+// {"_id":{"$oid":"5b6b3e702d296da484d7728b"},"speech":"But I think ","time":{"$numberDouble":"8.744606494903564"},"userID":{"$numberInt":"1"},"location":[{"$numberDouble":"0.5425664268874342"},{"$numberDouble":"0.38735791602246616"},{"$numberDouble":"0.11169528881419745"}],"ID":{"$oid":"5b5f9616b3b55c557c1d625d"},"confidence":{"$numberDouble":"0.987192756303026"},"name":"Zhao"},
+// {"_id":{"$oid":"5b6b3e702d296da484d7728c"},"speech":"Gon na be with a lot less forest and if you are from earth, so falling wouldn't be as much of a problem. ","time":{"$numberDouble":"16.603581190109253"},"userID":{"$numberInt":"1"},"location":[{"$numberDouble":"0.5489415995709289"},{"$numberDouble":"0.38885088145642266"},{"$numberDouble":"0.11400971764777933"}],"ID":{"$oid":"5b5f9622b3b55c557c1d6aaa"},"confidence":{"$numberDouble":"0.9837389862794608"},"name":"Zhao"},
+// {"_id":{"$oid":"5b6b3e702d296da484d7728d"},"speech":"Two hundred miles is a lot and if you're all but like one little degree, you can end up somewhere. You know different, so you definitely need the ","time":{"$numberDouble":"10.17677354812622"},"userID":{"$numberInt":"1"},"location":[{"$numberDouble":"0.5269036668786267"},{"$numberDouble":"0.3864622202554698"},{"$numberDouble":"0.11585158777564215"}],"ID":{"$oid":"5b5f966fb3b55c557c1d9f7a"},"confidence":{"$numberDouble":"0.983091371748016"},"name":"Zhao"},
+// {"_id":{"$oid":"5b6b3e702d296da484d7728e"},"speech":"Mad and oxygen and water and everything else I feel like you, don't need the exercise. I don't do that. ","time":{"$numberDouble":"10.358289003372192"},"userID":{"$numberInt":"1"},"location":[{"$numberDouble":"0.5210126372380823"},{"$numberDouble":"0.39237472148752617"},{"$numberDouble":"0.1094297623821313"}],"ID":{"$oid":"5b5f9670b3b55c557c1da026"},"confidence":{"$numberDouble":"0.9955552455361394"},"name":"Zhao"},
+// {"_id":{"$oid":"5b6b3e702d296da484d7728f"},"speech":"I think this ","time":{"$numberDouble":"1.4840290546417236"},"userID":{"$numberInt":"1"},"location":[{"$numberDouble":"0.518130435759438"},{"$numberDouble":"0.3863842754609059"},{"$numberDouble":"0.10882966114752282"}],"ID":{"$oid":"5b5f9671b3b55c557c1da0c9"},"confidence":{"$numberDouble":"0.9958057835541072"},"name":"Zhao"},
+// {"_id":{"$oid":"5b6b3e702d296da484d77290"},"speech":"On the moon, of course, he eighteen people to get lost and not yet on someone discovered and mapped landscape, FAQ value, ","time":{"$numberDouble":"12.03278112411499"},"userID":{"$numberInt":"0"},"location":[{"$numberDouble":"-0.9029518752672681"},{"$numberDouble":"0.37728700303029983"},{"$numberDouble":"0.2997000928132454"}],"ID":{"$oid":"5b5f9671b3b55c557c1da12d"},"confidence":{"$numberDouble":"0.9984490210586455"},"name":"Gaurav"},
+// {"_id":{"$oid":"5b6b3e702d296da484d77291"},"speech":"Movies on something having them up is important and the gallons of water and the first aid kit again important too, because you don't know what can happen on the ","time":{"$numberDouble":"11.894180297851562"},"userID":{"$numberInt":"0"},"location":[{"$numberDouble":"-0.9025803146958483"},{"$numberDouble":"0.37735491203168237"},{"$numberDouble":"0.29543777231696655"}],"ID":{"$oid":"5b5f9672b3b55c557c1da1d0"},"confidence":{"$numberDouble":"0.9986193091020712"},"name":"Gaurav"},
+// {"_id":{"$oid":"5b6b3e702d296da484d77292"},"speech":"Two hundred mile trip it might take days undefeated along route for whatever reason, even at the map off, you might be stranded. So ","time":{"$numberDouble":"15.247209310531616"},"userID":{"$numberInt":"0"},"location":[{"$numberDouble":"-0.8921163506693938"},{"$numberDouble":"0.37223123513056183"},{"$numberDouble":"0.28763088866162995"}],"ID":{"$oid":"5b5f9673b3b55c557c1da273"},"confidence":{"$numberDouble":"0.9975954016878503"},"name":"Gaurav"},
+// {"_id":{"$oid":"5b6b3e702d296da484d77293"},"speech":"Can ride on the back of the house and feed him a water and oxygen and let him walk us ","time":{"$numberDouble":"17.57897138595581"},"userID":{"$numberInt":"2"},"location":[{"$numberDouble":"0.8277425551811896"},{"$numberDouble":"0.43757536431603333"},{"$numberDouble":"0.8744865090899833"}],"ID":{"$oid":"5b5f9684b3b55c557c1daef9"},"confidence":{"$numberDouble":"0.9980429046963619"},"name":"Jingfei"},
+// {"_id":{"$oid":"5b6b3e702d296da484d77294"},"speech":"Two hundred miles ","time":{"$numberDouble":"4.302461862564087"},"userID":{"$numberInt":"2"},"location":[{"$numberDouble":"0.8222784969330804"},{"$numberDouble":"0.42563244082417107"},{"$numberDouble":"0.8627024944405781"}],"ID":{"$oid":"5b5f968eb3b55c557c1db596"},"confidence":{"$numberDouble":"0.997975263072753"},"name":"Jingfei"},
+// {"_id":{"$oid":"5b6b3e702d296da484d77295"},"speech":"Who masks of oxygen? So only two of these people are living, but you know there could be multiple people on the ship. I feel like ","time":{"$numberDouble":"15.271146297454834"},"userID":{"$numberInt":"3"},"location":[{"$numberDouble":"-0.7521065736282722"},{"$numberDouble":"0.40454998067884435"},{"$numberDouble":"1.2200459734682072"}],"ID":{"$oid":"5b5f96a1b3b55c557c1dc320"},"confidence":{"$numberDouble":"0.9720569205328483"},"name":"Logan"},
+// {"_id":{"$oid":"5b6b3e702d296da484d77296"},"speech":"Take the oxygen tank and then light it up with the fire match and then buyers, whoever gets burnt ","time":{"$numberDouble":"15.821672916412354"},"userID":{"$numberInt":"2"},"location":[{"$numberDouble":"0.7782127648645759"},{"$numberDouble":"0.40955921319636024"},{"$numberDouble":"0.8708147536234687"}],"ID":{"$oid":"5b5f96b6b3b55c557c1dd26d"},"confidence":{"$numberDouble":"0.996926944740744"},"name":"Jingfei"},
+// {"_id":{"$oid":"5b6b3e702d296da484d77297"},"speech":"And then there ","time":{"$numberDouble":"6.4018731117248535"},"userID":{"$numberInt":"1"},"location":[{"$numberDouble":"0.5411205354362935"},{"$numberDouble":"0.39428412625153925"},{"$numberDouble":"0.14512664629975325"}],"ID":{"$oid":"5b5f96bcb3b55c557c1dd64c"},"confidence":{"$numberDouble":"0.9895770516621221"},"name":"Zhao"},
+// {"_id":{"$oid":"5b6b3e702d296da484d77298"},"speech":"I ","time":{"$numberDouble":"2.8324217796325684"},"userID":{"$numberInt":"2"},"location":[{"$numberDouble":"0.7805377713562504"},{"$numberDouble":"0.4014456447492255"},{"$numberDouble":"0.8688820007453151"}],"ID":{"$oid":"5b5f96c8b3b55c557c1de1bf"},"confidence":{"$numberDouble":"0.9967264553476776"},"name":"Jingfei"},
+// {"_id":{"$oid":"5b6b3e702d296da484d77299"},"speech":"Hey computer, oxen and guessing is compressed to sell ","time":{"$numberDouble":"8.864286422729492"},"userID":{"$numberInt":"1"},"location":[{"$numberDouble":"0.5171083725783469"},{"$numberDouble":"0.43212122654351115"},{"$numberDouble":"0.1537968102019185"}],"ID":{"$oid":"5b5f96cdb3b55c557c1de5c8"},"confidence":{"$numberDouble":"0.9940794790151202"},"name":"Zhao"},
+// {"_id":{"$oid":"5b6b3e702d296da484d7729a"},"speech":"Everyone of the it's a explosion, cause accidents, very flammable income plus. Yes, ","time":{"$numberDouble":"17.151116609573364"},"userID":{"$numberInt":"1"},"location":[{"$numberDouble":"0.5483590027494549"},{"$numberDouble":"0.41668826717969754"},{"$numberDouble":"0.13864588213372683"}],"ID":{"$oid":"5b5f96d6b3b55c557c1dec5c"},"confidence":{"$numberDouble":"0.9869842991562818"},"name":"Zhao"},
+// {"_id":{"$oid":"5b6b3e702d296da484d7729b"},"speech":"Everyone would die, including you and it's even worse, because it's compressed oxygen so a lot more than there is usually ","time":{"$numberDouble":"15.272130727767944"},"userID":{"$numberInt":"1"},"location":[{"$numberDouble":"0.5552019503028517"},{"$numberDouble":"0.4148751161508372"},{"$numberDouble":"0.14026653791259036"}],"ID":{"$oid":"5b5f96dfb3b55c557c1df2f9"},"confidence":{"$numberDouble":"0.9834934167936138"},"name":"Zhao"},
+// {"_id":{"$oid":"5b6b3e702d296da484d7729c"},"speech":"The elevator is a good idea, but I think what I'm guessing accrued, maybe like four and I I'm thinking about ","time":{"$numberDouble":"16.391149044036865"},"userID":{"$numberInt":"1"},"location":[{"$numberDouble":"0.5304151859629491"},{"$numberDouble":"0.4048988786092811"},{"$numberDouble":"0.14015882457107806"}],"ID":{"$oid":"5b5f96e8b3b55c557c1df98d"},"confidence":{"$numberDouble":"0.9889768912934062"},"name":"Zhao"},
+// {"_id":{"$oid":"5b6b3e702d296da484d7729d"},"speech":"For people, so you don't have to like hog the tank the whole time, so we carry it and you share like the breeding mask. ","time":{"$numberDouble":"16.10092520713806"},"userID":{"$numberInt":"1"},"location":[{"$numberDouble":"0.5391258882304677"},{"$numberDouble":"0.4167819290923194"},{"$numberDouble":"0.15183348254608162"}],"ID":{"$oid":"5b5f96f2b3b55c557c1e002a"},"confidence":{"$numberDouble":"0.9868757159464476"},"name":"Zhao"},
+// {"_id":{"$oid":"5b6b3e702d296da484d7729e"},"speech":"I think ","time":{"$numberDouble":"3.5265653133392334"},"userID":{"$numberInt":"1"},"location":[{"$numberDouble":"0.5691796301778735"},{"$numberDouble":"0.4234016555885531"},{"$numberDouble":"0.12111028235957687"}],"ID":{"$oid":"5b5f9709b3b55c557c1e10fa"},"confidence":{"$numberDouble":"0.9760197939810973"},"name":"Zhao"},
+// {"_id":{"$oid":"5b6b3e702d296da484d7729f"},"speech":"Hey but yeah ","time":{"$numberDouble":"4.13194465637207"},"userID":{"$numberInt":"2"},"location":[{"$numberDouble":"0.7697399862041504"},{"$numberDouble":"0.39075225894066956"},{"$numberDouble":"0.8868093209934871"}],"ID":{"$oid":"5b5f970db3b55c557c1e138c"},"confidence":{"$numberDouble":"0.9874746741885765"},"name":"Jingfei"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772a0"},"speech":"In we could try to feed the engine with oxygen and tried to light it up and see if the ex ","time":{"$numberDouble":"16.008174180984497"},"userID":{"$numberInt":"2"},"location":[{"$numberDouble":"0.7661907598771127"},{"$numberDouble":"0.40768050813143725"},{"$numberDouble":"0.9063501231082369"}],"ID":{"$oid":"5b5f974db3b55c557c1e42e0"},"confidence":{"$numberDouble":"0.9985700441533638"},"name":"Jingfei"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772a1"},"speech":"We are aliens ","time":{"$numberDouble":"4.8450376987457275"},"userID":{"$numberInt":"1"},"location":[{"$numberDouble":"0.5551599470958125"},{"$numberDouble":"0.40145938073043774"},{"$numberDouble":"0.12907633925499057"}],"ID":{"$oid":"5b5f9784b3b55c557c1e69cd"},"confidence":{"$numberDouble":"0.9997819975545206"},"name":"Zhao"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772a2"},"speech":"Teens, who don't need oxygen, we're only using oxygen to make his provisions? Maybe ","time":{"$numberDouble":"14.004534244537354"},"userID":{"$numberInt":"2"},"location":[{"$numberDouble":"0.7637579896648189"},{"$numberDouble":"0.3957284130037728"},{"$numberDouble":"0.8789987905127898"}],"ID":{"$oid":"5b5f9789b3b55c557c1e6da3"},"confidence":{"$numberDouble":"0.9735931793580928"},"name":"Jingfei"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772a3"},"speech":"Well can, but we are since were aliens. We live on the moon and there's other aliens who owns other space. You ","time":{"$numberDouble":"15.87852144241333"},"userID":{"$numberInt":"2"},"location":[{"$numberDouble":"0.8057057971033407"},{"$numberDouble":"0.4291412668720286"},{"$numberDouble":"0.9377665204838184"}],"ID":{"$oid":"5b5f97b7b3b55c557c1e8e69"},"confidence":{"$numberDouble":"0.9983816785692825"},"name":"Jingfei"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772a4"},"speech":"Yeah yeah ","time":{"$numberDouble":"3.2542929649353027"},"userID":{"$numberInt":"2"},"location":[{"$numberDouble":"0.7947041496920286"},{"$numberDouble":"0.4170280247669491"},{"$numberDouble":"0.8778405846127068"}],"ID":{"$oid":"5b5f97cab3b55c557c1e9ba3"},"confidence":{"$numberDouble":"0.9958997438523847"},"name":"Jingfei"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772a5"},"speech":"Still be like some something really big and twenty miles is just a foot away to us. Not just take one step into their two hundred move. ","time":{"$numberDouble":"17.913077354431152"},"userID":{"$numberInt":"1"},"location":[{"$numberDouble":"0.5553826870023804"},{"$numberDouble":"0.4101149851222152"},{"$numberDouble":"0.197816355705614"}],"ID":{"$oid":"5b5f97e2b3b55c557c1ead02"},"confidence":{"$numberDouble":"0.9862256917512344"},"name":"Zhao"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772a6"},"speech":"","time":{"$numberDouble":"-1532991488.287183"},"userID":{"$numberInt":"1"},"location":[{"$numberDouble":"0.5191407592590744"},{"$numberDouble":"0.39361022384756633"},{"$numberDouble":"0.043741620504120615"}],"ID":{"$oid":"5b5f9800b3b55c557c1ec1f8"},"confidence":{"$numberDouble":"0.9811174786083796"},"name":"Zhao"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772a7"},"speech":"So system ","time":{"$numberDouble":"5.576083183288574"},"userID":{"$numberInt":"1"},"location":[{"$numberDouble":"0.5147882119997698"},{"$numberDouble":"0.38882793512307995"},{"$numberDouble":"0.043832918316918185"}],"ID":{"$oid":"5b5f9809b3b55c557c1ec871"},"confidence":{"$numberDouble":"0.9967348629665169"},"name":"Zhao"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772a8"},"speech":"The words and then to it ","time":{"$numberDouble":"8.663821935653687"},"userID":{"$numberInt":"0"},"location":[{"$numberDouble":"-0.9002613624110553"},{"$numberDouble":"0.3663807833593795"},{"$numberDouble":"0.22077218071567511"}],"ID":{"$oid":"5b5f9817b3b55c557c1ed29b"},"confidence":{"$numberDouble":"0.9976102575656229"},"name":"Gaurav"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772a9"},"speech":"That'S the time frame to the tying will we get to the mother ship elsewhere there, but ","time":{"$numberDouble":"15.754852294921875"},"userID":{"$numberInt":"2"},"location":[{"$numberDouble":"0.7377150240430188"},{"$numberDouble":"0.38024503812011684"},{"$numberDouble":"0.9177878262813459"}],"ID":{"$oid":"5b5f982eb3b55c557c1ee313"},"confidence":{"$numberDouble":"0.9916476398417273"},"name":"Jingfei"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772aa"},"speech":"Two time dimensions: making the fifth dimension: ","time":{"$numberDouble":"6.498614311218262"},"userID":{"$numberInt":"1"},"location":[{"$numberDouble":"0.6381811602931654"},{"$numberDouble":"0.4221678384733806"},{"$numberDouble":"0.041327043535993674"}],"ID":{"$oid":"5b5f9842b3b55c557c1ef17a"},"confidence":{"$numberDouble":"0.99958683504451"},"name":"Zhao"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772ab"},"speech":"And the mother ship ","time":{"$numberDouble":"3.796842575073242"},"userID":{"$numberInt":"1"},"location":[{"$numberDouble":"0.614048112267719"},{"$numberDouble":"0.422271877820418"},{"$numberDouble":"0.0848585466191337"}],"ID":{"$oid":"5b5f984fb3b55c557c1efa96"},"confidence":{"$numberDouble":"0.983902935163994"},"name":"Zhao"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772ac"},"speech":"I was sleeping on the mothership, pretending we were on the broken ship. ","time":{"$numberDouble":"11.951027393341064"},"userID":{"$numberInt":"2"},"location":[{"$numberDouble":"0.7554587108932712"},{"$numberDouble":"0.40172653016601867"},{"$numberDouble":"0.9403549013566945"}],"ID":{"$oid":"5b5f9854b3b55c557c1efdf7"},"confidence":{"$numberDouble":"0.9894810051251636"},"name":"Jingfei"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772ad"},"speech":"How can earn, how can mers be real if our eyes aren't real ","time":{"$numberDouble":"14.677733659744263"},"userID":{"$numberInt":"3"},"location":[{"$numberDouble":"-0.6742089332101548"},{"$numberDouble":"0.38451954491016715"},{"$numberDouble":"1.2739973084632101"}],"ID":{"$oid":"5b5f987fb3b55c557c1f1c97"},"confidence":{"$numberDouble":"0.9653723615247203"},"name":"Logan"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772ae"},"speech":"Thank ","time":{"$numberDouble":"4.825090646743774"},"userID":{"$numberInt":"3"},"location":[{"$numberDouble":"-0.42045432391297516"},{"$numberDouble":"0.442548272601153"},{"$numberDouble":"1.2003315900750327"}],"ID":{"$oid":"5b5f9892b3b55c557c1f2a60"},"confidence":{"$numberDouble":"0.9791730254261415"},"name":"Logan"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772af"},"speech":"Bad ","time":{"$numberDouble":"6.005932569503784"},"userID":{"$numberInt":"3"},"location":[{"$numberDouble":"-0.38629658886965756"},{"$numberDouble":"0.4524379864284472"},{"$numberDouble":"1.1768168865527504"}],"ID":{"$oid":"5b5f9898b3b55c557c1f2e5a"},"confidence":{"$numberDouble":"0.9946720382575633"},"name":"Logan"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772b0"},"speech":"She ","time":{"$numberDouble":"9.413788318634033"},"userID":{"$numberInt":"3"},"location":[{"$numberDouble":"-0.3992025116339379"},{"$numberDouble":"0.4466029295386689"},{"$numberDouble":"1.1476675816009205"}],"ID":{"$oid":"5b5f989fb3b55c557c1f33aa"},"confidence":{"$numberDouble":"0.9985122025209074"},"name":"Logan"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772b1"},"speech":"It was a good like this ","time":{"$numberDouble":"7.423128843307495"},"userID":{"$numberInt":"2"},"location":[{"$numberDouble":"0.8034185299396169"},{"$numberDouble":"0.4208594614226212"},{"$numberDouble":"0.9205733892327483"}],"ID":{"$oid":"5b5f98a7b3b55c557c1f38fa"},"confidence":{"$numberDouble":"0.970605977957596"},"name":"Jingfei"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772b2"},"speech":"This isn't a ","time":{"$numberDouble":"7.5089111328125"},"userID":{"$numberInt":"0"},"location":[{"$numberDouble":"-0.9554630570323223"},{"$numberDouble":"0.3542056453449709"},{"$numberDouble":"0.39233538721778716"}],"ID":{"$oid":"5b5f98bdb3b55c557c1f4930"},"confidence":{"$numberDouble":"0.9966331133218078"},"name":"Gaurav"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772b3"},"speech":"You guys hit right on them all yeah yeah ","time":{"$numberDouble":"5.804471015930176"},"userID":{"$numberInt":"3"},"location":[{"$numberDouble":"-0.7283792636148654"},{"$numberDouble":"0.38860297163510127"},{"$numberDouble":"1.1570437510032971"}],"ID":{"$oid":"5b5f98c8b3b55c557c1f509c"},"confidence":{"$numberDouble":"0.9749865506128818"},"name":"Logan"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772b4"},"speech":"Question mark I like the menu each point at the ","time":{"$numberDouble":"13.55374026298523"},"userID":{"$numberInt":"3"},"location":[{"$numberDouble":"-0.7267221646445959"},{"$numberDouble":"0.3988682317200431"},{"$numberDouble":"1.1479341122975777"}],"ID":{"$oid":"5b5f98cfb3b55c557c1f55d1"},"confidence":{"$numberDouble":"0.9872051879548368"},"name":"Logan"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772b5"},"speech":"That we have more information in ways we can like cut into three five minutes on the last information. ","time":{"$numberDouble":"11.986932277679443"},"userID":{"$numberInt":"3"},"location":[{"$numberDouble":"-0.5898946998710365"},{"$numberDouble":"0.33376121138123427"},{"$numberDouble":"1.1165581702350853"}],"ID":{"$oid":"5b5f98e4b3b55c557c1f6445"},"confidence":{"$numberDouble":"0.9879376296645411"},"name":"Logan"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772b6"},"speech":"I'M talking about aliens, we concluded that it ","time":{"$numberDouble":"5.2868571281433105"},"userID":{"$numberInt":"3"},"location":[{"$numberDouble":"-0.6643083824417242"},{"$numberDouble":"0.3872850103801908"},{"$numberDouble":"1.243782814178448"}],"ID":{"$oid":"5b5f98f2b3b55c557c1f7039"},"confidence":{"$numberDouble":"0.9572631095525642"},"name":"Logan"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772b7"},"speech":"All the dream - and we just had to wait because of the yeah yeah - we were coming up with murder stories. ","time":{"$numberDouble":"13.925745487213135"},"userID":{"$numberInt":"1"},"location":[{"$numberDouble":"0.5767293008011521"},{"$numberDouble":"0.40918449936896417"},{"$numberDouble":"0.04096322778576206"}],"ID":{"$oid":"5b5f98f4b3b55c557c1f71c6"},"confidence":{"$numberDouble":"0.9893201408754438"},"name":"Zhao"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772b8"},"speech":"Dozens and probably for people of the on the crew, we had to kill two people, because that was the only option because there were two of them had to die. Yeah there's only ","time":{"$numberDouble":"17.357563972473145"},"userID":{"$numberInt":"3"},"location":[{"$numberDouble":"-0.6567465045780424"},{"$numberDouble":"0.39732986261171693"},{"$numberDouble":"1.2429799545377263"}],"ID":{"$oid":"5b5f98fdb3b55c557c1f782d"},"confidence":{"$numberDouble":"0.9794761623301425"},"name":"Logan"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772b9"},"speech":"Two oxygen deadlines and ","time":{"$numberDouble":"5.876278877258301"},"userID":{"$numberInt":"3"},"location":[{"$numberDouble":"-0.6066780956344033"},{"$numberDouble":"0.3382501239558889"},{"$numberDouble":"1.087134786564685"}],"ID":{"$oid":"5b5f9906b3b55c557c1f7edc"},"confidence":{"$numberDouble":"0.9791086978810547"},"name":"Logan"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772ba"},"speech":"When we start talking about, murder, may take sometime to ","time":{"$numberDouble":"8.594008445739746"},"userID":{"$numberInt":"3"},"location":[{"$numberDouble":"-0.6764858504239535"},{"$numberDouble":"0.3736944287407864"},{"$numberDouble":"1.1537733242342527"}],"ID":{"$oid":"5b5f991ab3b55c557c1f8c9c"},"confidence":{"$numberDouble":"0.9643844034418627"},"name":"Logan"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772bb"},"speech":"In places like they do, we ","time":{"$numberDouble":"4.664521217346191"},"userID":{"$numberInt":"0"},"location":[{"$numberDouble":"-0.8936417828795427"},{"$numberDouble":"0.3781999985278736"},{"$numberDouble":"0.23493814473081348"}],"ID":{"$oid":"5b5f9927b3b55c557c1f95f8"},"confidence":{"$numberDouble":"0.970231983068348"},"name":"Gaurav"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772bc"},"speech":"Yeah desert him know that ","time":{"$numberDouble":"4.021241664886475"},"userID":{"$numberInt":"3"},"location":[{"$numberDouble":"-0.5870012302720985"},{"$numberDouble":"0.3265695062896005"},{"$numberDouble":"1.105148966488915"}],"ID":{"$oid":"5b5f992fb3b55c557c1f9c06"},"confidence":{"$numberDouble":"0.9689500278222711"},"name":"Logan"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772bd"},"speech":"The dragons are, did drag ","time":{"$numberDouble":"8.841347694396973"},"userID":{"$numberInt":"3"},"location":[{"$numberDouble":"-0.6860585927821679"},{"$numberDouble":"0.38115122068225943"},{"$numberDouble":"1.159405356597827"}],"ID":{"$oid":"5b5f9949b3b55c557c1faeac"},"confidence":{"$numberDouble":"0.9827445895516281"},"name":"Logan"},
+// {"_id":{"$oid":"5b6b3e702d296da484d772be"},"speech":"Needs that that, to our thinking as well, see you guys later ","time":{"$numberDouble":"21.785718202590942"},"userID":{"$numberInt":"0"},"location":[{"$numberDouble":"-0.6838019422065383"},{"$numberDouble":"0.3643144212062914"},{"$numberDouble":"1.0909435325131158"}],"ID":{"$oid":"5b5f9973b3b55c557c1fd184"},"confidence":{"$numberDouble":"0.9918587176232987"},"name":"Gaurav"}
+// ];
+      
+      
+      
+      
+      
+// var test_data = [];
+// var nn = 0;
+
+// for(var i = 0; i < speech_data.length; i++){
+
+
+// if(speech_data[i].time.$numberDouble < 0)
+// {
+//     continue;
+    
+// }
+
+// test_data[nn++] = { speech: speech_data[i].speech, name:speech_data[i].name, userID:parseInt(speech_data[i].userID.$numberInt) , time:parseInt(speech_data[i].time.$numberDouble), location:[parseInt(speech_data[i].location[0].$numberDouble),parseInt(speech_data[i].location[1].$numberDouble),parseInt(speech_data[i].location[2].$numberDouble)], confidence:parseFloat(speech_data[i].confidence.$numberDouble), ID:speech_data[i].ID.$oid };
+
+
+// }
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+        var width = 770;
+        var height = 940;
+        var diameter = 760;
+        // controls the number of nodes
+        // will read from Json file
+        var participantSpeak = [];
+        var participantS = []
+        var participantTime = [];
+        var timeSpoken = test_data.map(tra => tra.time);
+        var userID_test = test_data.map(tra => tra.userID);
+        var numParticipants = Math.max(...userID_test) + 1;
+        var contsignal = true;
+        var scale_arr = [];
+        var scale_factor = 0.89;
+        var activate_overlap_detection = true;
+      
+        var currentSpeaker = [];
+        var previousSpeaker = [];
+        var global_time = 0;
+        
+        // Although we can determine the number of times someone spoke from the test data we have, we are assuming that we will be using live data in the end, hence also assuming that we don't have that information at this point
+        
+        // var common_scale = d3.scaleQuantize().domain([0, 50]).range(['white','blue']);
+        var k, i;
+        for(k = 0; k < numParticipants; k++){
+            participantSpeak[k] = 0;
+            participantTime[k] = 0;
+            participantS[k] = 0;
+        }
+        // array of circles
+        var circleData = [];
+
+        var tooltip = d3.select("body")
+                        .append("div")
+                        .style("position", "absolute")
+                        .style("z-index", "10")
+                        .style("visibility", "hidden")
+                        .style("color", "white")
+                        .style("padding", "8px")
+                        .style("background-color", "rgba(0, 0, 0, 0.50)")
+                        .style("border-radius", "6px")
+                        .style("font", "12px sans-serif")
+                        .text("tooltip");
+
+        var timer_var1 = [],timer_var2 = [];
+        var timer_count = 0;
+        var itr = 0;
+        var alpha = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+        //http://bl.ocks.org/jfreyre/b1882159636cc9e1283a
+      
+        // controls radius of circle the nodes are around
+        var radius = 25;
+        var radius2 = 150;
+        // creates container that the nodes are in with specific attributes
+        var svgContainer = d3.select("body")
+                            .append("svg")
+                            .attr("width", 750)
+                            .attr("height", 750)
+                            .style("border", "1px solid black");
+      
+        var userID_vals = [];
+        var ui = 0;
+        var step_value = 1;
+        var total_time_num = parseInt(timeSpoken.reduce(reduction));
+        var time_values = [],ui, time_acc = [],labels = [];
+        for(ui = 0; ui <= total_time_num; ui++) {time_values[ui] = ui}; 
+        time_acc = timeSpoken.slice();    // time scale
+        for(ui = 1; ui < timeSpoken.length; ui++) {time_acc[ui] = time_acc[ui-1] + time_acc[ui]};      //
+        for(ui = 0; ui < total_time_num; ui++) {labels[ui] = search_list(time_acc,ui);}; 
+        for(ui = 0; ui < total_time_num; ui++){userID_vals[ui] = userID_test[labels[ui]];}
+        var max_times_spoken = 0;
+        var min_times_spoken = Infinity;
+        var min_speaker = 0;
+      
+        for(var iii = 0; iii < numParticipants; iii++  )
+        { 
+        var temp_spoken = get_t_upto_curr_time(total_time_num-1,iii);   
+        if(max_times_spoken < temp_spoken)
+        {max_times_spoken = temp_spoken;}
+
+        if(min_times_spoken > temp_spoken )
+        {
+        min_speaker = iii;
+        min_times_spoken = temp_spoken;
+        }
+        }
+        var colors = d3.scaleLinear().domain([1,max_times_spoken+(max_times_spoken*0.06)])
+                            .interpolate(d3.interpolateHcl)
+                            .range([d3.rgb("#FFFFFF"), d3.color("#ff0000")]);
+
+      
+        //for(ui = 0; ui < total_time_num; ui++ ) {uid_labels[ui] = }
+      
+        var rad_mat = math.zeros(numParticipants,time_values.length),color_mat = math.zeros(numParticipants,time_values.length), curr_mat = math.zeros(numParticipants,time_values.length),prev_mat = math.zeros(numParticipants,time_values.length);
+
+        get_curr_speaking();
+        initial_draw(svgContainer,numParticipants,circleData);
+
+        generate_data(100);
+      
+        var timeline = d3.sliderHorizontal()
+          .min(0)
+          .max(total_time_num-1)
+          .step(1)
+          .width(1100)
+          .on('onchange', slider_value => {
+            print_all_figures(slider_value);
+          });
+
+        var g = d3.select("div#time_line").append("svg")
+          .attr("width", 1200)
+          .attr("height", 100)
+          .append("g")
+          .attr("transform", "translate(50,50)");
+
+        g.call(timeline);
+//        print_all_figures(100);
+      
+        //currently(0,timeSpoken[0],100,parseInt(circleData[0].attr("r")));
+        // currently(i,timesec,ret,rad); 
+        // start infinite loop here to update display over and over again
+    
+      function generate_data(ret)    // generate data
+      {
+      
+        var k,t,ity;
+        
+      for(t = 0; t < total_time_num; t++)  
+      {
+        
+            if(t > timeSpoken[0]-1)
+            {
+              var curr_sec = search_list(time_acc,t);
+              while((userID_test[curr_sec])==(userID_test[curr_sec - 1]))
+              { 
+                if(curr_sec == 0){break;} curr_sec--;
+              }
+              
+              if(curr_sec == 0)
+              {
+               prev_mat.subset(math.index(userID_test[0],t),1);  // previous speaker for that instant
+              }
+              else
+              {
+               prev_mat.subset(math.index(userID_test[curr_sec - 1],t),1);  // previous speaker for that instant}
+              }
+            // prev_mat.subset(math.index(userID_test[search_list(time_acc,t) - 1],t),1);  // previous speaker for that instant
+            //  prev_mat[test_data[labels[t]].userID][t] = 1;
+            }
+            // A[1][2]=0
+           curr_mat.subset(math.index(userID_test[labels[t]],t),1);
+           // curr_mat[test_data[labels[t]].userID][t] = 1;
+        
+        for(k = 0; k < numParticipants; k++)
+            {
+             
+             rad_mat.subset(math.index(k,t),(radius + 1*(ret*(get_sp_upto_curr_time(t,k)/60))));
+            //rad_mat.subset(math.index(userID_test[labels[t]],t),(radius + 1*(ret*(get_sp_upto_curr_time(t,userID_test[labels[t]])/60))));
+            // rad_mat[test_data[labels[t]].userID][t] = radius + 1*(ret*(t/60));
+             color_mat.subset(math.index(k,t),colors(get_t_upto_curr_time(t,k)));
+            // color_mat.subset(math.index(userID_test[labels[t]],t),colors(search_for_instances(time_acc,t,userID_test[labels[t]]))); 
+            // color_mat[test_data[labels[t]].userID][t] = color(search_for_instances(time_acc,t,test_data[labels[t]].userID));     
+        }
+      } 
+       
+        if(activate_overlap_detection)
+           {
+        
+        for(t = 0; t < total_time_num; t++)
+          {
+        for(var i = 0; i < numParticipants; i++)
+          {
+            for(var j = 0; j < numParticipants; j++)
+            {
+              if(i == j)
+              {continue;}
+              
+             if( (rad_mat.subset(math.index(i,t)) + rad_mat.subset(math.index(j,t))) > dist_calc(i,j) ) // overlap!
+             {
+             update_scale(t);
+             }
+            }      
+          }
+        }
+      }
+      }
+
+      function print_all_figures(t)
+      {
+        global_time = t;
+
+          svgContainer.selectAll("circle")  
+            .on("mouseover", function(d,id) {
+                                    return tooltip.text("Times Spoken: " + parseInt(get_sp_upto_curr_time(t,id)) + " Total Time: "  + parseInt(get_t_upto_curr_time(t, id)))
+                                                .style("visibility", "visible");
+                                })
+                                .on("mousemove", function() {
+                                    return tooltip.style("top", (d3.event.pageY-10)+"px")
+                                                .style("left",(d3.event.pageX+10)+"px");
+                                })
+                                .on("mouseout", function() {
+                                    return tooltip.style("visibility", "hidden");
+                                });
+
+          svgContainer.selectAll("text")
+            .on("mouseover", function(d,id) {
+                                    return tooltip.text("Times Spoken: " + parseInt(get_sp_upto_curr_time(t,id)) + " Total Time: "  + parseInt(get_t_upto_curr_time(t, id)))
+                                                .style("visibility", "visible");
+                                })
+                                .on("mousemove", function() {
+                                    return tooltip.style("top", (d3.event.pageY-10)+"px")
+                                                .style("left",(d3.event.pageX+10)+"px");
+                                })
+                                .on("mouseout", function() {
+                                    return tooltip.style("visibility", "hidden");
+                                });
+      
+        
+        
+          if(t == total_time_num || t == 0)
+          {
+          previously_remove();
+                     
+          }
+        
+        if(t > total_time_num - 5)
+        {
+          
+      var ty1 = setInterval(function(t){circleData[min_speaker].style("fill","green");},400);
+      var ty2 = setInterval(function(t){circleData[min_speaker].style("fill","blue");},800);
+          
+          console.log(ty1)
+          console.log(ty2)
+          
+      timer_var1[timer_count] = ty1;
+      timer_var2[timer_count] = ty2;
+          
+          timer_count++;
+      
+        }  
+        else    
+        {
+
+          for(var ti = 0; ti < timer_var1.length; ti++)
+          {
+          
+            clearInterval(timer_var1[ti]);
+            clearInterval(timer_var2[ti]);
+        
+          }
+          timer_var1 = [];
+          timer_var2 = [];
+          timer_count = 0;
+          
+//          update_color_radius(color_mat.subset(math.index(min_speaker,t)),rad_mat.subset(math.index(min_speaker,t)),min_speaker);
+
+        }
+        
+        var h; 
+        for(h = 0; h < numParticipants; h++)
+        {
+          update_color_radius(color_mat.subset(math.index(h,t)),rad_mat.subset(math.index(h,t)),h);
+          if(curr_mat.subset(math.index(h,t)) == 1)
+          {
+          currently(h);
+          //update_color_radius(color_mat.subset(math.index(h,t)),rad_mat.subset(math.index(h,t)),h);
+          }
+          else if(prev_mat.subset(math.index(h,t)) == 1)
+          {
+          previously(h,t);        
+          }
+          else
+          {
+          not_currently_previous(h);
+          }
+          
+        }
+      
+      }
+            
+      function initial_draw(svgContainer,numParticipants,circleData)
+        {
+        
+                // loops through for each participant and creates a node
+        // and evenly spaces the nodes around the circle
+        // in the future will use location data from Json to place people (Will need to generate relative coordinates in 2D unless the visualization is done in 3D)
+        // also need to attach ID to each node
+        for(i = 0; i < numParticipants; i++) 
+        {
+            // formula from here http://bl.ocks.org/bycoffe/3404776
+            var angle = 0;
+            var x = 0;
+            var x_1 = [];
+            var y = 0;
+            var y_1 = [];
+            angle = (i / (numParticipants/2)) * Math.PI;
+            x = (radius2 * Math.cos(angle)) + (width/2);
+            y = (radius2 * Math.sin(angle)) + (width/2);
+			      x_1.push( ((radius2+8) * Math.cos(angle)) + (width/2) );
+            y_1.push( ((radius2+8) * Math.sin(angle)) + (width/2) );
+            var circle = svgContainer.append("circle")
+                                .attr("cx", x)
+                                .attr("cy", y)
+                                .attr("r", 25)
+                                .attr("id", i)
+                                .style("stroke", "black")
+                                .style("fill",colors(0))
+                                .style("padding", 2)
+                                .on("mouseover", function() {
+                                    return tooltip.text("Times Spoken: " + 0 + " Total Time: "  + 0).style("visibility", "visible");
+                                })
+                                .on("mousemove", function() {
+                                    return tooltip.style("top", (d3.event.pageY-10)+"px")
+                                                .style("left",(d3.event.pageX+10)+"px");
+                                })
+                                .on("mouseout", function() {
+                                    return tooltip.style("visibility", "hidden");
+                                });
+            
+            circleData.push(circle);
+
+            var id = parseInt(circleData[i].attr("id"));
+
+            var text = svgContainer.append("text")
+                                .attr("x", x)
+                                .attr("y", y + 6)
+                                .text(alpha[id])
+                                .attr("id",i.toString())
+                                .attr("font-family", "san-serif")
+                                .attr("font-size", "20px")
+                                .attr("fill", "black")
+                                .attr("text-anchor", "middle")
+                                .on("mouseover", function() {
+                                    return tooltip.text("Times Spoken: " + 0 + " Total Time: "  + 0).style("visibility", "visible");
+                                })
+                                .on("mousemove", function() {
+                                    return tooltip.style("top", (d3.event.pageY-10)+"px")
+                                                .style("left",(d3.event.pageX+10)+"px");
+                                })
+                                .on("mouseout", function() {
+                                    return tooltip.style("visibility", "hidden");
+                                });;
+            
+        }
+
+        }
+                            
+        // function will be passed the id of the person currently speaking
+        // and highlight them
+        
+      function search_list(lis,ele)        // searches for which sector the time instant belongs to (the sectors are divided by the conversation snippets)
+      {
+        var i;
+        
+        if(ele < lis[0])
+        {
+        return 0;
+        }
+        
+        for(i = 1; i < lis.length; i++)
+        {
+        
+          if(lis[i-1] <= ele && lis[i] > ele )
+          {
+          return i;
+          }
+          
+        }
+         
+        if(ele >= lis[lis.length - 1])
+        {
+        return lis.length - 1;
+        }
+      }
+      
+      function search_for_instances(lis,tim,userID)                // how many instances of userID before time tim?
+      {
+      var i; 
+      var cnt = 0; 
+        if(tim < test_data[0].time && userID == userID_test[0] )
+        {
+        cnt++; 
+        }
+      
+        for(i = 0; i < lis.length; i++ )
+         {
+          if(lis[i] <= tim)
+          {
+            if(userID_test[i] == userID)
+            {
+            cnt++;
+            }
+          }
+           else if(lis[lis.length-1]== tim)
+           {
+           break;
+           }
+           else
+           {
+           break;
+           }
+        }
+        
+        
+        return cnt;
+      }
+      
+      function get_curr_speaking()
+      {
+      var i,p;
+        
+        for (i = 0; i < numParticipants; i++)
+        {
+          for(p = 0; p < test_data.length; p++)
+              {
+                
+              if(userID_test[p] == i) 
+              {
+                 participantSpeak[i]++;
+              }
+                
+              }
+        }
+        
+      }
+      
+      function get_sp_upto_curr_time(t,UID)                        // Get instances of when a person speaks
+      {                                                            // by looking at the data
+      var i,p;
+        var tot_count = 0;
+        
+          for(p = 0; time_acc[p] <= t ; p++)
+              {
+                
+              if(userID_test[p] == UID) 
+              {
+                tot_count++;                                        // The total count here is of the test_data points and not the sampled time points
+              }
+                
+              }
+        return tot_count;
+      }
+      
+      function get_t_upto_curr_time(t,UID)                        // Get instances of when a person speaks
+      {                                                            // by looking at the data
+      var i,p;
+        var tot_count = 0;
+        
+        if(t == total_time_num)
+        {
+        t--;
+        }
+        
+          for(p = 0; p <= t ; p++)
+              {
+                
+              if(userID_vals[p] == UID) 
+              {
+                tot_count++;                                        // The total count here is of the test_data points and not the sampled time points
+              }
+                
+              }
+        return tot_count;
+      }
+      
+        function currently(i) 
+      {
+            
+            //participantSpeak[i]++;
+            //participantTime[i]+= timesec;
+          
+            circleData[i].style("stroke","red")
+            .style("stroke-width", "5px");
+         
+            // increase one unit of radius every minute
+            // every second then increases 1/60th of a unit, slow progression
+            // assuming all individual conversation snippets do not exceed 15-20 seconds      
+            // display previously spoken text here?
+
+        }
+        
+      function not_currently_previous(i)
+      {
+      circleData[i]
+        .style("stroke","black")
+        .style("stroke-width","1px");
+      }
+      
+      
+      function update_color_radius(colo,newrad,i)
+      {
+           circleData[i]
+            .style("fill",colo)
+            .attr("r",newrad); 
+      }
+      
+        // function will be passed the id of the person who
+        // just spoke and highlight them
+        // will also darken the color of the circle by 1 shade
+        
+        // Anyone who may have spoken previously will have their transcript 
+        // displayed next to them in a text box
+        
+        function previously(i,t) // ,sti) 
+        {
+
+          previously_remove();
+          
+          circleData[i].style("stroke", "lightpink")
+                        .style("stroke-width", "5px");
+                // data[i].style("fill", colors[5]);
+               
+       //        var ls = sti.length;
+       // TODO: After succesfully obtaining transcript data, get character count
+       // and determine width of the rectangle on basis of that
+       // Center text on rectangle
+          
+          var x_r = parseInt(circleData[i].attr("cx"));
+          var y_r = parseInt(circleData[i].attr("cy"));
+               
+                //  svgContainer.append("rect")
+                // .attr("x", parseInt(x_r) + 30)
+                // .attr("y", parseInt(y_r) + 30)
+                // .attr("rx",10)
+                // .attr("ry",10)
+                // .attr("id","rect_box")
+                // .attr("width", 100)
+                // .attr("height", 30)
+                // .attr("stroke","black")
+                // .attr("fill","none")
+                // .attr("id","rect_box")
+                // .attr("border", "1px solid black");
+          
+                  var multi_lines=format_text(svgContainer,test_data[userID_test[search_list(time_acc,t)]].speech,25,parseInt(x_r) + 35,parseInt(y_r) + 50);
+
+                  svgContainer.append("rect")
+                  .attr("x", parseInt(x_r) + 30)
+                  .attr("y", parseInt(y_r) + 30)
+                  .attr("rx",10)
+                  .attr("ry",10)
+                  .attr("id","rect_box")
+                  .attr("width", 180)
+                  .attr("height", 30+15*(multi_lines-1))
+                  .attr("stroke","black")
+                  .attr("fill","none")
+                  .attr("id","rect_box")
+                  .attr("border", "1px solid black");
+
+//                 svgContainer.append("text")
+//                 .attr("x",parseInt(x_r) + 35)
+//                 .attr("y",parseInt(y_r) + 50)
+//                 //.style("font-size", function(m,n){ var bbox = this.getBBox(); var cbbox = this.parentNode.getBBox(); var scale = Math.min(cbbox.width/bbox.width, cbbox.height/bbox.height); m.scale = scale; return (m.scale  + "px"); })
+//                 //.style("fill", "black")
+//                 .attr("id","text_box")
+//                 .text(test_data[userID_test[search_list(time_acc,t)]].speech);
+          
+          /// Need sector number!
+                
+                //tooltip.text("heeheehaahaa").style("visibility", "visible");
+               
+        
+        }
+      
+		// Remove the text box for use with other transcript elements 
+       function previously_remove()
+       {
+            svgContainer.select("#rect_box").remove();
+            svgContainer.selectAll("#text_box").remove();    
+       }
+        // function will be passed the amount of time someone spoke in seconds
+        // and change the size of the node proportionally to the amount
+        // of time
+        // function will also be passed id of person who spoke
+      
+      
+      
+      function update_scale(scale_pos)
+      {
+      
+        for(var k = scale_pos; k < total_time_num; k++ )    // All time values after that point get their radius updated
+        {
+          for(var p = 0; p < numParticipants; p++)      // All circles get their radius updated
+              {
+              rad_mat.subset(math.index(p,k),rad_mat.subset(math.index(p,k))*scale_factor);
+              }
+        }
+        
+      }
+      
+      function dist_calc(I,J)
+      {
+      return Math.sqrt( Math.pow(parseFloat(circleData[I].attr("cx")) - parseFloat(circleData[J].attr("cx")) ,2) + Math.pow( parseFloat(circleData[I].attr("cy")) - parseFloat(circleData[J].attr("cy")) ,2) );      
+      }
+      
+      function reduction(val,ele)
+      {return val+ele;}
+      
+    function format_text(object,sentences,width,x,y)
+      {
+    var words = sentences.split(" ");
+    var containers=[];
+    for(var i=0;i<words.length;i){
+        var temp = "";
+        while (temp.length<width && i<words.length){
+            if(temp.length==0){
+                temp+=words[i];
+                i++;
+            }else if(!(temp.length+1+words[i].length>width)){
+                temp+=" ";
+                temp+=words[i];
+                i++;
+            }
+            if(i>=words.length ||temp.length+1+words[i].length>width){
+                break;
+            }
+        }
+        containers.push(temp);
+    }
+    for(var i=0; i<containers.length;i++){
+        object.append("text").attr("x",x).attr("y",y+i*15).attr("text-anchor","beginning").attr("id","text_box").text(containers[i]);
+      
+    }
+    return containers.length;
+}
+      
+        // ourRequest.send();
+    </script>
+    
+</body>
+</html>
