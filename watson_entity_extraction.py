@@ -1,5 +1,6 @@
 import sys
 
+from pymongo import MongoClient
 import json
 from watson_developer_cloud import NaturalLanguageUnderstandingV1
 from watson_developer_cloud.natural_language_understanding_v1 \
@@ -46,8 +47,8 @@ def getKeywords(data):
 
         cats = []
         for c in cat:
-            #if c['score'] > scoreThreshold:
-            cats.append(c['label'])  # get label of categories
+            if c['score'] > scoreThreshold:
+                cats.append(c['label'])  # get label of categories
         categories[key] = cats  # pair the categories with the current keyword
 
     return categories
@@ -173,7 +174,6 @@ def gen_vis(data):
     #                         categories[current[0]] = {names: i}
 
     #for cat in cats:
-
         #print(c)
 
 
@@ -184,10 +184,20 @@ def gen_vis(data):
     output = open(outputFile, "w")
     output.write(json.dumps(results, indent=2))
 
-with open('transcript_text.txt', 'r') as myfile:
-    data=myfile.read()
-    myfile.close()
 
-gen_vis(data)
+client = MongoClient('mongodb://128.113.21.81:27017')
+db = client.SurvivalOnMoon
+speech = db.speech
+text = ''
+
+for s in speech.find():
+    text += s['text']
+print(text
+
+# with open('transcript_text.txt', 'r') as myfile:
+#     data=myfile.read()
+#     myfile.close()
+
+gen_vis(text)
 
 
