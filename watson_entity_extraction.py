@@ -145,59 +145,49 @@ def gen_vis(data):
             else:
                 for t in types:
                     results[name].append(t)
+    return results
 
-    cats = []
+def splitGroups(group):
+    if len(group) == 1:
+        return 1
+    else:
+        g = group.pop(0)
+        return {g: splitGroups(group)}
 
-    for names,types in results.items():
-        for t in types:
-            if t.startswith('/'):
-                t = t.replace('/', '', 1)
-            cats.append(t)
-    cats.sort()
-    #print(cats)
+
+
+def hierarchy(results):
     categories = dict()
+    groups = []
+    for names, types in results.items():
+        types.append(names)
+        groups = '/'.join(types)
+        groups= groups.replace('/', '', 1)
+        groups = groups.split('/')
 
-    # for c in cats:
-    #     current = c.split('/')
-    #
-    #     if len(current) == 1:
-    #         i = 0
-    #         for names,types in results.items():
-    #             for t in types:
-    #                 if categories.get(current[0]) is None:                              #set a new key
-    #                     print(names)
-    #                     if t.replace('/','') == current[0]:
-    #                         categories[current[0]] = {names: 1}    # key is category, value is dict of name and count
-    #                 else:
-    #                     if t.replace('/','') == current[0]:
-    #                         i+=1
-    #                         categories[current[0]] = {names: i}
-
-    #for cat in cats:
-        #print(c)
-
-
-
-
+        if len(groups) == 1:
+            categories[groups[0]] = 1
+        else:
+            categories[groups.pop(0)] = splitGroups(groups)
 
     #print(categories)
     output = open(outputFile, "w")
-    output.write(json.dumps(results, indent=2))
+    output.write(json.dumps(categories, indent=2))
 
+# client = MongoClient('mongodb://128.113.21.81:27017')
+# db = client.SurvivalOnMoon
+# speech = db.speech
+# text = ''
 
-client = MongoClient('mongodb://128.113.21.81:27017')
-db = client.SurvivalOnMoon
-speech = db.speech
-text = ''
+# for s in speech.find():
+#     text += s['text']
+# print(text)
 
-for s in speech.find():
-    text += s['text']
-print(text
+with open('transcript_text.txt', 'r') as myfile:
+    text=myfile.read()
+    myfile.close()
 
-# with open('transcript_text.txt', 'r') as myfile:
-#     data=myfile.read()
-#     myfile.close()
+results = gen_vis(text)
 
-gen_vis(text)
-
+hierarchy(results)
 
