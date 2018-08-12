@@ -149,7 +149,7 @@ def gen_vis(data):
 
 def splitGroups(group):
     if len(group) == 1:
-        return 1
+        return {group[0]: 1}
     else:
         g = group.pop(0)
         return {g: splitGroups(group)}
@@ -166,9 +166,10 @@ def hierarchy(results):
         groups = groups.split('/')
 
         if len(groups) == 1:
-            categories[groups[0]] = 1
+            categories[groups[0]]= 1
         else:
-            categories[groups.pop(0)] = splitGroups(groups)
+            g = groups.pop(0)
+            categories[g]= splitGroups(groups)
 
     #print(categories)
     output = open(outputFile, "w")
@@ -188,6 +189,9 @@ with open('transcript_text.txt', 'r') as myfile:
     myfile.close()
 
 results = gen_vis(text)
+
+# output = open(outputFile, "w")
+# output.write(json.dumps(results, indent=2))
 
 hierarchy(results)
 
