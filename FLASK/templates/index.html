@@ -28,10 +28,10 @@
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="https://unpkg.com/d3-simple-slider@0.2.1/build/d3-simple-slider.js"></script>
   <script>
-    var ourRequest = new XMLHttpRequest();
-    ourRequest.open('GET','/js9' )
-    ourRequest.onload = function(){
-        var test_data = JSON.parse(ourRequest.responseText);
+//     var ourRequest = new XMLHttpRequest();
+//     ourRequest.open('GET','/js9' )
+//     ourRequest.onload = function(){
+//         var test_data = JSON.parse(ourRequest.responseText);
 
         // arbitrarily sets width, height, and diameter
 
@@ -42,17 +42,17 @@
         // test_data
         // Assumption the data is sorted in time! That is, ID 0 happens before ID 1 and so on
 
-        // var test_data = [
-        // {users:["0","1","2","3","4","5"], speech:"this is a test",time:2,userID:0},
-        // {users:["0","1","2","3","4","5"], speech:"This is a test but this needs to be something long",time:5,userID:1},
-        // {users:["0","1","2","3","4","5"], speech:"The test string is a good thing to use for development",time:6,userID:2},
-        // {users:["0","1","2","3","4","5"], speech:"A complex sentence is a sentence that contains an independent clause and one or more dependent clauses. An independent clause can stand alone as a sentence, but a dependent clause even though it has a subject and a verb cannot stand alone.",time:10,userID:1},
-        // {users:["0","1","2","3","4","5"], speech:"JavaScript also defines two trivial data types, null and undefined, each of which defines only a single value. In addition to these primitive data types, JavaScript supports a composite data type known as object. We will cover objects in detail in a separate chapter. Note − JavaScript does not make a distinction between integer values and floating-point values. All numbers in JavaScript are represented as floating-point values. JavaScript represents numbers using the 64-bit floating-point format defined by the IEEE 754 standard.",time:15,userID:1},
-        // {users:["0","1","2","3","4","5"], speech:"Now, imagine the challenge for Facebook. Facebook deals with enormous amount of text data on a daily basis in the form of status updates, comments etc. And it is all the more important for Facebook to utilise this text data to ",time:4,userID:3},
-        // {users:["0","1","2","3","4","5"], speech:"This library has gained a lot of traction in the NLP community and is a possible substitution to the gensim ",time:2,userID:4},
-        // {users:["0","1","2","3","4","5"], speech:"low magnitude. But FastText can produce vectors better than random by breaking the above word in chunks and using the vectors for those chunks to create a final vector for the word. In this particular",time:3,userID:5},
-        // {users:["0","1","2","3","4","5"], speech:"Words in their natural form cannot be used for any Machine Learning task in general. One way to use the words is to transform these words into some representations that capture some attributes of the word. It is analogous",time:3,userID:5}
-        // ];        
+        var test_data = [
+        {users:["0","1","2","3","4","5"], speech:"this is a test",time:2,userID:0},
+        {users:["0","1","2","3","4","5"], speech:"This is a test but this needs to be something long",time:5,userID:1},
+        {users:["0","1","2","3","4","5"], speech:"The test string is a good thing to use for development",time:6,userID:2},
+        {users:["0","1","2","3","4","5"], speech:"A complex sentence is a sentence that contains an independent clause and one or more dependent clauses. An independent clause can stand alone as a sentence, but a dependent clause even though it has a subject and a verb cannot stand alone.",time:10,userID:1},
+        {users:["0","1","2","3","4","5"], speech:"JavaScript also defines two trivial data types, null and undefined, each of which defines only a single value. In addition to these primitive data types, JavaScript supports a composite data type known as object. We will cover objects in detail in a separate chapter. Note − JavaScript does not make a distinction between integer values and floating-point values. All numbers in JavaScript are represented as floating-point values. JavaScript represents numbers using the 64-bit floating-point format defined by the IEEE 754 standard.",time:15,userID:1},
+        {users:["0","1","2","3","4","5"], speech:"Now, imagine the challenge for Facebook. Facebook deals with enormous amount of text data on a daily basis in the form of status updates, comments etc. And it is all the more important for Facebook to utilise this text data to ",time:4,userID:3},
+        {users:["0","1","2","3","4","5"], speech:"This library has gained a lot of traction in the NLP community and is a possible substitution to the gensim ",time:2,userID:4},
+        {users:["0","1","2","3","4","5"], speech:"low magnitude. But FastText can produce vectors better than random by breaking the above word in chunks and using the vectors for those chunks to create a final vector for the word. In this particular",time:3,userID:5},
+        {users:["0","1","2","3","4","5"], speech:"Words in their natural form cannot be used for any Machine Learning task in general. One way to use the words is to transform these words into some representations that capture some attributes of the word. It is analogous",time:3,userID:5}
+        ];        
         //////////////////////////////////////////////////////////////////////////
 
         //////////////////////////////////////////////////////////////////////////
@@ -144,15 +144,8 @@
         // start infinite loop here to update display over and over again
         var pad = 3;        // to display properly
 
-        //setTimeout(function() { do_curr(0);},0) 
-        // setTimeout(function() { do_curr(1);},(time_acc[0] + pad)*1000) 
-        // setTimeout(function() { do_curr(2);},(time_acc[1] + 2*pad)*1000) 
-        // setTimeout(function() { do_curr(3);},(time_acc[2] + 3*pad)*1000) 
-        // setTimeout(function() { do_curr(4);},(time_acc[3] + 4*pad)*1000) 
-        // setTimeout(function() { do_curr(5);},(time_acc[4] + 5*pad)*1000) 
-        // setTimeout(function() { do_curr(6);},(time_acc[5] + 6*pad)*1000) 
-        // setTimeout(function() { do_curr(7);},(time_acc[6] + 7*pad)*1000) 
-        // setTimeout(function() { do_curr(8);},(time_acc[7] + 8*pad)*1000)
+    var end_condition = false;
+          
         console.log(100);
         previously_remove();
 
@@ -160,19 +153,19 @@
         svgContainer.select("#text_box").remove(); 
 
 
-        //       var varlar = false;
-        //       var prevdata,currdata;
-        //       var im = 0;
-        //       for(im = 0; im < test_data.length; im++)
-        //         {
-        //       setTimeout(function() { do_curr(im);},timeSpoken[im]*1000)  
+              var varlar = false;
+              var prevdata,currdata;
+              var im = 0;
+              for(im = 0; im < test_data.length; im++)
+                {
+              setTimeout(function() { do_curr(im);},timeSpoken[im]*1000)  
 
-        //         }
+                }
 
 
-        //           function keydownHandler(e) {
-        //     }
-        // }
+                  function keydownHandler(e) {
+            }
+        }
 
         function do_curr(im){
 
