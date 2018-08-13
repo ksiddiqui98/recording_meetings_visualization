@@ -1,0 +1,33 @@
+var totaljson;
+
+
+// var test_data = [];
+// var nn = 0;
+// for(var i = 0; i < speech_data.length; i++){
+// if(speech_data[i].time.$numberDouble < 0)
+// {
+//     continue;
+    
+// }
+
+// test_data[nn++] = { speech: speech_data[i].speech, name:speech_data[i].name, userID:parseInt(speech_data[i].userID.$numberInt) , time:parseInt(speech_data[i].time.$numberDouble), location:[parseInt(speech_data[i].location[0].$numberDouble),parseInt(speech_data[i].location[1].$numberDouble),parseInt(speech_data[i].location[2].$numberDouble)], confidence:parseFloat(speech_data[i].confidence.$numberDouble), ID:speech_data[i].ID.$oid };
+// }
+var usersID;
+var speechdata;
+var timespoke;
+var timelength;
+var text;
+
+for(var i=0; i<totaljson.length;i++){
+    
+}
+
+
+
+
+
+
+
+
+
+totaljson[totaljson.length-1] //last object and show they just talked
