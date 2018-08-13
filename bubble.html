@@ -1,162 +1,162 @@
 <!DOCTYPE html>
 <head>
-    <meta charset="utf-8">
-    <style>
-        h1 {
-            font-size: 50px;
-            color: navy;
-            font-family: HelvNeueLightForIBM, Helvetica Neue, Arial, Helvetica, sans-serif;
-            text-align: center;
-        }
-        body {
-            background-color: rgba(255, 255, 255, 0.897);
-        }
+  <meta charset="utf-8">
+  <style>
 
-        .node {
-            cursor: pointer;
-        }
+  .node {
+    cursor: pointer;
+  }
 
-        .node:hover {
-            stroke: black;
-            stroke-width: 1.5px;
-        }
+  .node:hover {
+    stroke: #000;
+    stroke-width: 1.5px;
+  }
 
-        .node--leaf {
-            fill: white;
-        }
+  .node--leaf {
+    fill: white;
+  }
 
-        .label {
-            font: 11px;
-            font-family: HelvNeueLightForIBM, Helvetica Neue, Arial, Helvetica, sans-serif;
-        }
+  .label {
+    font: 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+    text-anchor: middle;
+    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+  }
 
-        .label,
-        .node--root,
-        .node--leaf {
-            pointer-events: none;
-        }
+  .label,
+  .node--root,
+  .node--leaf {
+    pointer-events: none;
+  }
 
-    </style> 
-    <title>Bubble Hierarchy</title>   
+  </style>
 </head>
 <body>
-    <h1>Bubble Hierarchy</h1>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script>
-        var width = 750;
-        var height = 750;
-        var svg = d3.select("body")
-                    .append("svg")
-                    .attr("width", width)
-                    .attr("height", height)
-                    .style("border", "1px solid black"),
-                    margin = 20,
-                    diameter = +svg.attr("width"),
-                    g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
-        
-    var color = d3.scaleLinear()
-                .domain([-1, 5])
-                .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
-                .interpolate(d3.interpolateHcl);
+  <svg width="960" height="960"></svg>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script>
 
-    var pack = d3.pack()
-                .size([diameter - margin, diameter - margin])
-                .padding(2);
+  var svg = d3.select("svg"),
+      margin = 20,
+      diameter = +svg.attr("width"),
+      g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
 
-    function loadJSON() {
-        var http_request = new XMLHttpRequest();
+  var color = d3.scaleLinear()
+      .domain([-1, 5])
+      .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
+      .interpolate(d3.interpolateHcl);
+
+  var pack = d3.pack()
+      .size([diameter - margin, diameter - margin])
+      .padding(2);
+
+  // d3.json("sample-example.json", function(error, root) {
+    // if (error) throw error;
+  function loadJSON() {
+
+    var http_request = new XMLHttpRequest();
+    try {
+      //Opera 8.0+, Firefox, Chrome, Safari
+      http_request = new XMLHttpRequest();
+    } catch(e) {
+      // Internet Explorer Browsers
+      try {
+        http_request = new ActiveXObject("Msxml2.XMLHTTP");
+      } catch(e) {
         try {
-            // Opera 8.0+, Firefox, Chrome, Safari
-            http_request = new XMLHttpRequest();
+          http_request = new ActiveXObject("Microsoft.XMLHTTP");
         } catch(e) {
-            // Internet Explorer Browsers
-            try {
-                http_request = new ActiveXObject("Msxml2.XMLHTTP");
-            } catch(e) {
-                try {
-                    http_request = new ActiveXObject("Microsoft.XMLHTTP");
-                } catch(e) {
-                    // Something went wrong
-                    alert("Your browser broke!");
-                    return false;
-                }
-            }
+          // Something went wrong
+          alert("your browser broke!");
+          return false;
         }
+      }
+    }
+    
+    
 
-        http_request.onreadystatechange = function() {
-            if(this.readyState == 4 && this.status == 200) {
-                var jsonObj = JSON.parse(this.responseText);
 
-                console.log(jsonObj);
+    http_request.onreadystatechange = function() {
+      if(this.readyState == 4 && this.status == 200) {
+        // var jsonObj = JSON.parse(this.responseText);
+        // var data_file = "sample.json?x="+y.toString();
+        var data = JSON.parse(http_request.response);
+        console.log(data);
+        console.log("SUCCESS");
 
-                root = d3.hierarchy(root)
-                        .sum(function(d) { return d.size; })
-                        .sort(function(a, b) {return b.value - a.value});
-                
-                var focus = root,
-                    nodes = pack(root).descendants(),
-                    view;
 
-                var circle = g.selectAll("circle")
-                            .data(nodes)
-                            .enter()
-                            .append("circle")
-                            .attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
-                            .style("fill", function(d) { if(focus !== d) zoom(d), d3.events.stopPropogation(); });
+        // console.log(data_file);
+        
+        root = d3.hierarchy(data)
+                .sum(function(d) { return d.size; })
+                .sort(function(a, b) { return b.value - a.value; });
+    
+        console.log(root);
+        
+        var focus = root,
+            nodes = pack(root).descendants(),
+            view;
 
-                var text = g.selectAll("tect")
-                            .data(nodes)
-                            .enter()
-                            .append("text")
-                            .attr("class", "label")
-                            .style("fill-opacity", function(d) { return d.parent === root ? 1 : 0; })
-                            .style("display", function(d) { return d.parent === root ? "inline" : "none"; })
-                            .text(function(d) { return d.data.name; })
+        var circle = g.selectAll("circle")
+          .data(nodes)
+          .enter().append("circle")
+          .attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
+          .style("fill", function(d) { return d.children ? color(d.depth) : null; })
+          .on("click", function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); });
 
-                var node = g.selectAll("circle, text");
+            
+        var text = g.selectAll("text")
+          .data(nodes)
+          .enter().append("text")
+          .attr("class", "label")
+          .style("fill-opacity", function(d) { return d.parent === root ? 1 : 0; })
+          .style("display", function(d) { return d.parent === root ? "inline" : "none"; })
+          .text(function(d) { return d.data.name; });
 
-                svg.style("background", color(-1))
-                    .on("click", function () { zoom(root); });
+        var node = g.selectAll("circle,text");
 
-                zoomTo([root.x, root.y, root.r * 2 + margin]);
+        svg.style("background", color(-1))
+            .on("click", function() { zoom(root); });
 
-                function zoom(d) {
-                    var focus0 = focus;
-                    var focus = root;
+        zoomTo([root.x, root.y, root.r * 2 + margin]);
 
-                    var transition = d3.transition()
-                                    .duration(d3.event.altKey ? 7500 : 750)
-                                    .tween("zoom", function(d) {
-                                        var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
-                                        return function(t) { zoomTo(i(t)); };
-                                    });
-                    
-                    transition.selectAll("text")
-                            .filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
-                            .style("fill-opacity", function(d) { return d.parent === focus ? 1 : 0; })
-                            .on("start", function(d) {if (d.parent === focus) this.style.display = "inline"; })
-                            .on("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
-                
-                }
+          function zoom(d) {
+            var focus0 = focus; focus = d;
 
-                function zoomTo(v) {
-                    var k = diameter /v[2];
-                    view = v;
-                    node.attr("transform", function(d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
-                    circle.attr("r", function(d) { return d.r * k; });
-                }
-            }
+            var transition = d3.transition()
+                .duration(d3.event.altKey ? 7500 : 750)
+                .tween("zoom", function(d) {
+                  var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
+                  return function(t) { zoomTo(i(t)); };
+                });
+
+            transition.selectAll("text")
+              .filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
+                .style("fill-opacity", function(d) { return d.parent === focus ? 1 : 0; })
+                .on("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })
+                .on("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
+          }
+
+          function zoomTo(v) {
+            var k = diameter / v[2]; view = v;
+            node.attr("transform", function(d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
+            circle.attr("r", function(d) { return d.r * k; });
+          }
         }
+      }
+      http_request.open('GET', 'new.json', true);
+      http_request.send();
+      return this;
     }
 
     function startVis() {
-        var inter = setInterval(function() {
-            loadJSON();
-        }, 5000);
+      var inter = setInterval(function() {
+        loadJSON();
+      }, 10000);
     }
-
+    loadJSON();
     startVis();
 
+    // loadJSON();
 
-    </script>
+  </script>
 </body>
