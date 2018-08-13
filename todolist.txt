@@ -1,3 +1,33 @@
+8/13/18 Updated
+
+PRIORITY:
+Real time data visualization
+
+Next level:
+Include dialogue acts
+	thicker lines linking two people based on how many times they spoke to each other
+
+Changes/additions Level 1:
+Change color scheme
+Change currently speaking/previously speaking indicator
+Indicator of who spoke the least
+Someone speaking to the group instead of an individual
+Text box placement
+Headpose visualization
+
+Changes/additions Bubble Visualization:
+add timeline feature
+fix zoom issue
+include transitions
+include ids in mouseover
+
+
+
+---------------------------------------------------------------------------------------------
+
+
+
+
 PRIORITY:
 Work with lunar landing data to get ready for demo —> have visualizations ready with lunar landing data for meeting on Monday.
 (Visualization with this data complete.)
