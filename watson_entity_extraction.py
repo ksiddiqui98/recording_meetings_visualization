@@ -124,7 +124,7 @@ def getEntities(data):
     categories = entities
     return categories
 
-def gen_vis(data):
+def feature(data):
     results = dict()
     if featureType == "keywords":
         results = getKeywords(data)
@@ -149,7 +149,7 @@ def gen_vis(data):
 
 def splitGroups(group):
     if len(group) == 1:
-        return {group[0]: 1}
+        return {group[0]: []}
     else:
         g = group.pop(0)
         return {g: splitGroups(group)}
@@ -166,20 +166,21 @@ def hierarchy(results):
         groups = groups.split('/')
 
         if len(groups) == 1:
-            categories[groups[0]]= 1
+            categories[groups[0]]= []
         else:
             g = groups.pop(0)
             categories[g]= splitGroups(groups)
+    return categories
 
-    #print(categories)
-    output = open(outputFile, "w")
-    output.write(json.dumps(categories, indent=2))
+
+
+
 
 # client = MongoClient('mongodb://128.113.21.81:27017')
 # db = client.SurvivalOnMoon
 # speech = db.speech
 # text = ''
-
+#
 # for s in speech.find():
 #     text += s['text']
 # print(text)
@@ -188,10 +189,26 @@ with open('transcript_text.txt', 'r') as myfile:
     text=myfile.read()
     myfile.close()
 
-results = gen_vis(text)
+results = feature(text)
+results = hierarchy(results)
 
-# output = open(outputFile, "w")
-# output.write(json.dumps(results, indent=2))
+vis_json = {}
+vis_json['name'] = 'hierarchy'
+vis_json['children'] = []
 
-hierarchy(results)
+def tags(results):
+    temp ={}
+    for key, values in results.items():
+        if not values:
+            obj= {
+                'name': key,
+                'size': values
+            }
+            vis_json['children'].append(obj)
+        else:
+            print('help')
+
+tags(results)
+out_file = open("output.json", 'w')
+out_file.write(json.dumps(vis_json, indent=2))
 
