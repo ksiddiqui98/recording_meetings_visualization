@@ -8,12 +8,12 @@ Include dialogue acts
 	thicker lines linking two people based on how many times they spoke to each other
 
 Changes/additions Level 1:
-Change color scheme
+Change color scheme (Gaurav)
 Change currently speaking/previously speaking indicator
-Indicator of who spoke the least
+Indicator of who spoke the least (Gaurav)
 Someone speaking to the group instead of an individual
 Text box placement
-Headpose visualization
+Headpose visualization 
 
 Changes/additions Bubble Visualization:
 add timeline feature
