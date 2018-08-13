@@ -35,27 +35,12 @@
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script>
 
-  var svg = d3.select("svg"),
-      margin = 20,
-      diameter = +svg.attr("width"),
-      g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
-
-  var color = d3.scaleLinear()
-      .domain([-1, 5])
-      .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
-      .interpolate(d3.interpolateHcl);
-
-  var pack = d3.pack()
-      .size([diameter - margin, diameter - margin])
-      .padding(2);
-
   // d3.json("sample-example.json", function(error, root) {
     // if (error) throw error;
   function loadJSON() {
-
     var http_request = new XMLHttpRequest();
     try {
-      //Opera 8.0+, Firefox, Chrome, Safari
+      // Opera 8.0+, Firefox, Chrome, Safari
       http_request = new XMLHttpRequest();
     } catch(e) {
       // Internet Explorer Browsers
@@ -71,10 +56,6 @@
         }
       }
     }
-    
-    
-
-
     http_request.onreadystatechange = function() {
       if(this.readyState == 4 && this.status == 200) {
         // var jsonObj = JSON.parse(this.responseText);
@@ -82,6 +63,21 @@
         var data = JSON.parse(http_request.response);
         console.log(data);
         console.log("SUCCESS");
+        d3.selectAll("svg").remove();
+        d3.select("body").append("svg").attr("width", 960).attr("height",960);
+        var svg = d3.select("svg"),
+            margin = 20,
+            diameter = +svg.attr("width"),
+            g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+
+        var color = d3.scaleLinear()
+            .domain([-1, 5])
+            .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
+            .interpolate(d3.interpolateHcl);
+
+        var pack = d3.pack()
+            .size([diameter - margin, diameter - margin])
+            .padding(2);
 
 
         // console.log(data_file);
@@ -143,17 +139,18 @@
           }
         }
       }
-      http_request.open('GET', 'flare.json', true);
+      http_request.open('GET', 'out.json', true);
       http_request.send();
+      // d3.selectAll("svg").remove();
       return this;
     }
 
     function startVis() {
       var inter = setInterval(function() {
         loadJSON();
-      }, 10000);
+      }, 5000);
     }
-
+    loadJSON();
     startVis();
 
     // loadJSON();

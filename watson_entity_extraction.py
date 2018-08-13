@@ -8,8 +8,8 @@ from watson_developer_cloud.natural_language_understanding_v1 \
 
 outputFile = sys.argv[1]
 featureType = sys.argv[2]
-scoreThreshold = .5
-relevanceThreshold = .6
+scoreThreshold = .3
+relevanceThreshold = .4
 
 
 natural_language_understanding = NaturalLanguageUnderstandingV1(
@@ -147,68 +147,167 @@ def feature(data):
                     results[name].append(t)
     return results
 
-def splitGroups(group):
-    if len(group) == 1:
-        return {group[0]: []}
-    else:
-        g = group.pop(0)
-        return {g: splitGroups(group)}
+# def splitGroups(group):
+#     if len(group) == 1:
+#         return {group[0]: []}
+#     else:
+#         g = group.pop(0)
+#         return {g: splitGroups(group)}
 
 
 
-def hierarchy(results):
-    categories = dict()
-    groups = []
-    for names, types in results.items():
-        types.append(names)
-        groups = '/'.join(types)
-        groups= groups.replace('/', '', 1)
-        groups = groups.split('/')
+# def hierarchy(results):
+#     categories = dict()
+#     groups = []
+#     for names, types in results.items():
+#         types.append(names)
+#         groups = '/'.join(types)
+#         groups= groups.replace('/', '', 1)
+#         groups = groups.split('/')
 
-        if len(groups) == 1:
-            categories[groups[0]]= []
-        else:
-            g = groups.pop(0)
-            categories[g]= splitGroups(groups)
-    return categories
-
-
+#         if len(groups) == 1:
+#             categories[groups[0]]= []
+#         else:
+#             g = groups.pop(0)
+#             categories[g]= splitGroups(groups)
+#     return categories
 
 
 
-# client = MongoClient('mongodb://128.113.21.81:27017')
-# db = client.SurvivalOnMoon
-# speech = db.speech
-# text = ''
-#
-# for s in speech.find():
-#     text += s['text']
+
+
+client = MongoClient('mongodb://128.113.21.81:27017')
+db = client.SurvivalOnMoon2
+speech = db.speech
+text = ''
+
+for s in speech.find():
+    text += s['text']
 # print(text)
 
-with open('transcript_text.txt', 'r') as myfile:
-    text=myfile.read()
-    myfile.close()
+# with open('transcript_text.txt', 'r') as myfile:
+#     text=myfile.read()
+#     myfile.close()
 
 results = feature(text)
-results = hierarchy(results)
+# results = hierarchy(results)
+
+# print(results)
+
+# vis_json = {}
+# vis_json['name'] = 'hierarchy'
+# vis_json['children'] = []
+
+# def tags(results):
+#     temp ={}
+#     for key, values in results.items():
+#         if not values:
+#             obj= {
+#                 'name': key,
+#                 'size': values
+#             }
+#             vis_json['children'].append(obj)
+#         else:
+#             print('help')
+
+# tags(results)
+# out_file = open("output.json", 'w')
+# out_file.write(json.dumps(vis_json, indent=2))
+
+
+# # opens in_file for reading
+# in_file = open("output.json", 'r')
+# # converts to a string
+# in_file_str = in_file.read()
+# # converts to a dictionary
+# in_file_data = json.loads(in_file_str)
+# opens new out_file to write to
+out_file = open("out.json", 'w')
 
 vis_json = {}
-vis_json['name'] = 'hierarchy'
-vis_json['children'] = []
+vis_json["name"] = "hierarchy"
+vis_json["children"] = []
 
-def tags(results):
-    temp ={}
-    for key, values in results.items():
-        if not values:
-            obj= {
-                'name': key,
-                'size': values
+
+final_json = {}
+final_json["name"] = "hierarchy"
+final_json["children"] = []
+
+def add_tags(d):
+    for key in d:
+        temp_json = {}
+        temp_json["keyword"] = key
+        temp_json["categories"] = []
+        for cat in d[key]:
+            cat_data = parse_categories(cat)
+            temp_json["categories"].append(cat_data)
+        vis_json["children"].append(temp_json)
+    # out_file.write(json.dumps(vis_json, indent=2))
+    # in_file.close()
+    # out_file.close()
+
+def parse_categories(s):
+    if s[0] == '/':
+        data = s.split("/")
+        data = data[1:]
+    else:
+        data= s.split("/")
+    return data
+
+
+
+def convert_json(d):
+    print(d)
+    # loop through all of the keywords
+    for key in d["children"]:
+        for cat in key["categories"]:
+            # case in which there are no categories
+            if key["categories"] == []:
+                obj = {
+                    "name": key["keyword"],
+                    "size": 1,
+                    "ids": []
+                }
+                final_json["children"].append(obj)
+            else:
+                con_json = {}
+                con_json["name"] = cat[0]
+                con_json["children"] = []
+                if len(cat) == 1:
+                    obj = {
+                        "name": key["keyword"],
+                        "size": 1,
+                        "ids": []
+                    }
+                    # adds new object to children the appends
+                    # to the overall visualization json
+                    con_json["children"].append(obj)
+                    final_json["children"].append(con_json)
+                else:
+                    temp_json = {}
+                    multi_level(temp_json, key, cat, 0)
+                    # append to vis_json
+                    final_json["children"].append(temp_json)
+    out_file.write(json.dumps(final_json, indent=2))
+
+
+def multi_level(json, key, cats, i):
+    json["name"] = cats[i]
+    json["children"] = []
+    if i < len(cats) - 1:
+        tmp = {}
+        json["children"].append(tmp)
+    if i == len(cats) - 1:
+        obj = {
+                "name": key["keyword"],
+                "size": 1,
+                "ids": []
             }
-            vis_json['children'].append(obj)
-        else:
-            print('help')
+        json["children"].append(obj)
+        exit
+    else:
+        multi_level(tmp, key, cats, i+1)
 
-tags(results)
-out_file = open("output.json", 'w')
-out_file.write(json.dumps(vis_json, indent=2))
-
+add_tags(results)
+convert_json(vis_json)
+    
