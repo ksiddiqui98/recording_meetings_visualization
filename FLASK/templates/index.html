@@ -27,14 +27,34 @@
    -->
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="https://unpkg.com/d3-simple-slider@0.2.1/build/d3-simple-slider.js"></script>
-  <script>
-//     var ourRequest = new XMLHttpRequest();
-//     ourRequest.open('GET','/js9' )
-//     ourRequest.onload = function(){
-//         var test_data = JSON.parse(ourRequest.responseText);
+  <script>function loadJSON(){
 
-        // arbitrarily sets width, height, and diameter
+var http_request = new XMLHttpRequest();
+try{
+   // Opera 8.0+, Firefox, Chrome, Safari
+   http_request = new XMLHttpRequest();
+}catch (e){
+   // Internet Explorer Browsers
+   try{
+      http_request = new ActiveXObject("Msxml2.XMLHTTP");
+   }catch (e) {
+      try{
+         http_request = new ActiveXObject("Microsoft.XMLHTTP");
+      }catch (e){
+         // Something went wrong
+         alert("Your browser broke!");
+         return false;
+      }
+   }
+}
+d3.selectAll("svg").remove();
+http_request.onreadystatechange = function(){
 
+
+    if (this.readyState == 4 && this.status == 200 ){
+      // Javascript function JSON.parse to parse JSON data
+      var test_data = JSON.parse(this.responseText);
+        
 
         ////////// TODO: Concrete method to read in data
 
@@ -362,7 +382,22 @@ function format_text(object,sentences,width,x,y){
         object.append("text").attr("x",x).attr("y",y+i*15).attr("text-anchor","beginning").attr("id","text_box").text(containers[i]);
     }
     return containers.length;
-}</script>
+}
+  
+          }
+    }
+    http_request.open("GET", "/js9");
+    http_request.send();
+}
+    function startVis(){
+        var inter = setInterval(function() {
+           loadJSON();
+         }, 5000);
+      }
+      
+    startVis();
+  
+  </script>
 
 </body>
 </html>
