@@ -9,11 +9,11 @@ Include dialogue acts
 
 Changes/additions Level 1:
 Change color scheme (Gaurav)
-Change currently speaking/previously speaking indicator
+Change currently speaking/previously speaking indicator (Zhao)
 Indicator of who spoke the least (Gaurav)
 Someone speaking to the group instead of an individual
 Text box placement (Zhao)
-Headpose visualization 
+Headpose visualization (Zhao)
 
 Changes/additions Bubble Visualization:
 add timeline feature
