@@ -8,8 +8,8 @@ Include dialogue acts
 	thicker lines linking two people based on how many times they spoke to each other
 
 Changes/additions Level 1:
-Change color scheme (Gaurav)
-Change currently speaking/previously speaking indicator (Zhao) [ ]
+Change color scheme (Gaurav) (Done)
+Change currently speaking/previously speaking indicator (Gaurav)
 Indicator of who spoke the least (Gaurav) (Done)
 Someone speaking to the group instead of an individual
 Text box placement (Zhao) [X]
