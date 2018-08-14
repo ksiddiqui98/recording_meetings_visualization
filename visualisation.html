@@ -429,6 +429,14 @@ test_data[nn++] = { speech: speech_data[i].speech, name:speech_data[i].name, use
           if(t == total_time_num || t == 0)
           {
           previously_remove();
+            
+            if(t == 0)
+            {
+            for(var u = 0; u < numParticipants;u++)
+                {
+                  circleData[u].style("stroke","black");
+            }            
+            }
                      
           }
         
@@ -488,7 +496,7 @@ test_data[nn++] = { speech: speech_data[i].speech, name:speech_data[i].name, use
             {
               update_color_radius(color_mat.subset(math.index(h,t)),rad_mat.subset(math.index(h,t)),h);
             }
-          if(curr_mat.subset(math.index(h,t)) == 1)
+          if(curr_mat.subset(math.index(h,t)) == 1 && (t!=0))
           {
           currently(h);
           //update_color_radius(color_mat.subset(math.index(h,t)),rad_mat.subset(math.index(h,t)),h);
@@ -532,6 +540,7 @@ test_data[nn++] = { speech: speech_data[i].speech, name:speech_data[i].name, use
                                 .attr("r", 25)
                                 .attr("id", i)
                                 .style("stroke", "black")
+                                .style("stroke-width","3px")
                                 .style("fill",colors(0))
                                 .style("padding", 2)
                                 .on("mouseover", function() {
@@ -697,8 +706,8 @@ test_data[nn++] = { speech: speech_data[i].speech, name:speech_data[i].name, use
             //participantSpeak[i]++;
             //participantTime[i]+= timesec;
           
-            circleData[i].style("stroke","red");
-        //    .style("stroke-width", "5px");
+            circleData[i].style("stroke","red")
+            .style("stroke-width", "3px");
          
             // increase one unit of radius every minute
             // every second then increases 1/60th of a unit, slow progression
@@ -710,8 +719,8 @@ test_data[nn++] = { speech: speech_data[i].speech, name:speech_data[i].name, use
       function not_currently_previous(i)
       {
       circleData[i]
-        .style("stroke","black");
-       // .style("stroke-width","1px");
+        .style("stroke","black")
+        .style("stroke-width","3px");
       }
       
       
@@ -734,8 +743,8 @@ test_data[nn++] = { speech: speech_data[i].speech, name:speech_data[i].name, use
 
           previously_remove();
           
-          circleData[i].style("stroke", "lightpink");
-                  //      .style("stroke-width", "5px");
+          circleData[i].style("stroke", "lightpink")
+                        .style("stroke-width", "3px");
                 // data[i].style("fill", colors[5]);
                
        //        var ls = sti.length;
@@ -759,7 +768,7 @@ test_data[nn++] = { speech: speech_data[i].speech, name:speech_data[i].name, use
                 // .attr("id","rect_box")
                 // .attr("border", "1px solid black");
           
-                  var multi_lines=format_text(svgContainer,test_data[userID_test[search_list(time_acc,t)]].speech,25,parseInt(x_r) + 35,parseInt(y_r) + 50);
+                  var multi_lines=format_text(svgContainer,test_data[search_list(time_acc,t)].speech,25,parseInt(x_r) + 35,parseInt(y_r) + 50);
 
                   svgContainer.append("rect")
                   .attr("x", parseInt(x_r) + 30)
@@ -858,7 +867,7 @@ test_data[nn++] = { speech: speech_data[i].speech, name:speech_data[i].name, use
         var iter = 0;
         var m = 0,v = 0,sd = 0;
         var sdint = 2;
-        var step = 0.2;
+        var step = 0.05;
         
         for(iter = 0;iter < numParticipants; iter++ )
         {
@@ -883,8 +892,13 @@ test_data[nn++] = { speech: speech_data[i].speech, name:speech_data[i].name, use
         silent_idx = [];
         var cnt_final = 0;
         
-        console.log(silent_idx);
-
+      console.log(m);
+      console.log(sdint);
+      console.log(sd);
+      console.log(pfx);
+        
+        
+        
        for(var f = 0; f < silent_folk.length; f++)
         {
           
