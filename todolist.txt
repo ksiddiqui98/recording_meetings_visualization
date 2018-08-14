@@ -12,7 +12,7 @@ Change color scheme (Gaurav)
 Change currently speaking/previously speaking indicator
 Indicator of who spoke the least (Gaurav)
 Someone speaking to the group instead of an individual
-Text box placement
+Text box placement (Zhao)
 Headpose visualization 
 
 Changes/additions Bubble Visualization:
