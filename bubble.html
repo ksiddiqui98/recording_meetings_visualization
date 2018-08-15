@@ -49,8 +49,11 @@
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script>
 
-  // d3.json("sample-example.json", function(error, root) {
-    // if (error) throw error;
+  // values when zoomed out
+  var currentX = 470;
+  var currentY = 470;
+  var currentR = 960;
+
   function loadJSON() {
     var http_request = new XMLHttpRequest();
     try {
@@ -76,19 +79,29 @@
         // var data_file = "sample.json?x="+y.toString();
         var data = JSON.parse(http_request.response);
         console.log(data);
-
-
+        console.log("Current X: " + currentX);
+        console.log("Current Y: " + currentY);
+        console.log("Current R: " + currentR);
+        if(currentX !== 470 && currentY !== 470 && currentR !== 960) {
+          zoomTo([currentX, currentY, currentR]);
+        }
         /* 
         Tooltip stuff 
         */
         var tooltip = d3.select("body")
           .append("div")
-          .attr("class", "tooltip"); 
+          .attr("class", "tooltip")
+          .attr("id", "tooltip"); 
+        
+        var t = d3.transition()
+                  .duration(750);
 
+        // var elem = document.getElementById("tooltip");
+        // elem.remove();
 
         d3.selectAll("svg").remove();
         d3.select("body").append("svg").attr("width", 960).attr("height",960);
-
+       
         var svg = d3.select("svg"),
             margin = 20,
             diameter = +svg.attr("width"),
@@ -102,6 +115,7 @@
         var pack = d3.pack()
             .size([diameter - margin, diameter - margin])
             .padding(10);
+
         
         root = d3.hierarchy(data)
                 .sum(function(d) { return d.size; })
@@ -153,7 +167,13 @@
             .on("click", function() { zoom(root); });
 
         zoomTo([root.x, root.y, root.r * 2 + margin]);
-
+          
+          // function startZoomed(x, y, r) {
+          //   var k = diameter / r; view = [x, y, r];
+          //   node.attr("transform", function(d) { return "translate(" + (d.x - x) * k + "," + (d.y - y) * k + ")"; });
+          //   circle.attr("r", function(d) { return d.r * k; });
+          // }
+          
           function zoom(d) {
             var focus0 = focus; focus = d;
 
@@ -172,6 +192,9 @@
           }
 
           function zoomTo(v) {
+            currentX = v[0];
+            currentY = v[1];
+            currentR = v[2];
             var k = diameter / v[2]; view = v;
             node.attr("transform", function(d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
             circle.attr("r", function(d) { return d.r * k; });
@@ -190,8 +213,6 @@
     }
     loadJSON();
     startVis();
-
-    // loadJSON();
 
   </script>
 </body>
