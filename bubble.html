@@ -29,7 +29,6 @@
     pointer-events: none;
   }
   /* Tooltip stuff */
-<<<<<<< HEAD
   .tooltip {
     position: absolute;      
     text-align: center; 
@@ -41,17 +40,6 @@
     border-radius: 8px;     
     pointer-events: none; 
     visibility: hidden;  
-=======
-  div.tooltip{
-     position: absolute;      
-    text-align: center;              
-    padding: 2px;       
-    font: 12px sans-serif;    
-    background: cyan; 
-    border: 0px;    
-    border-radius: 8px;     
-    pointer-events: none;   
->>>>>>> 64acfb7eb011e13bfd8e721cab3a648715904433
   }
 
   </style>
@@ -88,24 +76,14 @@
         // var data_file = "sample.json?x="+y.toString();
         var data = JSON.parse(http_request.response);
         console.log(data);
-<<<<<<< HEAD
-        // console.log("SUCCESS");
-=======
-        console.log("SUCCESS");
->>>>>>> 64acfb7eb011e13bfd8e721cab3a648715904433
+
 
         /* 
         Tooltip stuff 
         */
-<<<<<<< HEAD
         var tooltip = d3.select("body")
           .append("div")
           .attr("class", "tooltip"); 
-=======
-        var div = d3.select("body").append("div")
-          .attr("class", "tooltip")
-          .style("opacity", 0); 
->>>>>>> 64acfb7eb011e13bfd8e721cab3a648715904433
 
 
         d3.selectAll("svg").remove();
@@ -123,14 +101,7 @@
 
         var pack = d3.pack()
             .size([diameter - margin, diameter - margin])
-<<<<<<< HEAD
             .padding(10);
-
-=======
-            .padding(2);
-
-        // console.log(data_file);
->>>>>>> 64acfb7eb011e13bfd8e721cab3a648715904433
         
         root = d3.hierarchy(data)
                 .sum(function(d) { return d.size; })
@@ -150,7 +121,6 @@
           .on("click", function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); })
           //added for tooltip
           .on("mouseover", function(d){
-<<<<<<< HEAD
             tooltip.transition()
               .duration(100);
             tooltip.style("visibility", "visible");
@@ -166,19 +136,6 @@
             tooltip.transition()
               .duration(200)
             tooltip.style("visibility", "hidden"); 
-=======
-            div.transition()
-              .duration(100)
-              .style("opacity", .9);
-            div .html(d.data.name)
-                .style("left", (d3.event.pageX) + "px")    
-                .style("top", (d3.event.pageY - 28) + "px");
-          })
-          .on("mouseout", function(d){
-            div.transition()
-              .duration(200)
-              .style("opacity", 0); 
->>>>>>> 64acfb7eb011e13bfd8e721cab3a648715904433
           });
           //end of circle modification for tooltip
             
