@@ -17,8 +17,9 @@
   }
 
   .label {
-    font: 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: 15px "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-anchor: middle;
+    text-transform: lowercase;
     text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
   }
 
@@ -26,6 +27,19 @@
   .node--root,
   .node--leaf {
     pointer-events: none;
+  }
+  /* Tooltip stuff */
+  .tooltip {
+    position: absolute;      
+    text-align: center; 
+    text-transform: lowercase;             
+    padding: 2px;       
+    font: 12px sans-serif;    
+    background: rgba(0, 255, 255, 0.384); 
+    border: 0px;    
+    border-radius: 8px;     
+    pointer-events: none; 
+    visibility: hidden;  
   }
 
   </style>
@@ -62,9 +76,19 @@
         // var data_file = "sample.json?x="+y.toString();
         var data = JSON.parse(http_request.response);
         console.log(data);
-        console.log("SUCCESS");
+        // console.log("SUCCESS");
+
+        /* 
+        Tooltip stuff 
+        */
+        var tooltip = d3.select("body")
+          .append("div")
+          .attr("class", "tooltip"); 
+
+
         d3.selectAll("svg").remove();
         d3.select("body").append("svg").attr("width", 960).attr("height",960);
+
         var svg = d3.select("svg"),
             margin = 20,
             diameter = +svg.attr("width"),
@@ -77,10 +101,8 @@
 
         var pack = d3.pack()
             .size([diameter - margin, diameter - margin])
-            .padding(2);
+            .padding(10);
 
-
-        // console.log(data_file);
         
         root = d3.hierarchy(data)
                 .sum(function(d) { return d.size; })
@@ -97,8 +119,26 @@
           .enter().append("circle")
           .attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
           .style("fill", function(d) { return d.children ? color(d.depth) : null; })
-          .on("click", function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); });
-
+          .on("click", function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); })
+          //added for tooltip
+          .on("mouseover", function(d){
+            tooltip.transition()
+              .duration(100);
+            tooltip.style("visibility", "visible");
+            tooltip.text(d.data.name)
+                .style("left", (d3.event.pageX) + "px")    
+                .style("top", (d3.event.pageY - 28) + "px");
+          })
+          .on("mousemove", function() {
+            return tooltip.style("top", (d3.event.pageY-10)+"px")
+                          .style("left",(d3.event.pageX+10)+"px");
+          })
+          .on("mouseout", function(d){
+            tooltip.transition()
+              .duration(200)
+            tooltip.style("visibility", "hidden"); 
+          });
+          //end of circle modification for tooltip
             
         var text = g.selectAll("text")
           .data(nodes)
@@ -139,9 +179,8 @@
           }
         }
       }
-      http_request.open('GET', 'out.json', true);
+      http_request.open('GET', 'output.json', true);
       http_request.send();
-      // d3.selectAll("svg").remove();
       return this;
     }
 
