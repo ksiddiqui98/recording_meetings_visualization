@@ -1,7 +1,7 @@
 8/13/18 Updated
 
 PRIORITY:
-Real time data visualization (Zhao) [ ]
+Real time data visualization (Zhao) [X]
 
 Next level:
 Include dialogue acts
@@ -13,7 +13,7 @@ Indicator of who spoke the least (Gaurav) (Done)
 Someone speaking to the group instead of an individual
 Text box placement (Zhao) [X]
 Headpose visualization (Zhao) [ ]
-Fit in data Mou will send (Zhao) [ ]
+Fit in data Mou will send (Zhao) [X]
 
 
 Changes/additions Bubble Visualization:
