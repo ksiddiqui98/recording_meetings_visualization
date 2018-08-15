@@ -206,13 +206,21 @@
       return this;
     }
 
+    function removeTooltips(){
+      var all_tooltips = document.getElementsByClassName("tooltip"); 
+      var i = 0; 
+      for (i = 0; i < all_tooltips.length; ++i){
+        all_tooltips[i].style.display = "none"; 
+      }
+    }
+
     function startVis() {
       var inter = setInterval(function() {
         loadJSON();
       }, 5000);
     }
     loadJSON();
+    removeTooltips(); 
     startVis();
-
   </script>
 </body>
