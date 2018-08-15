@@ -1,8 +1,0 @@
-﻿[
-    {"users":["0","1","2","3","4","5"],"speech":"this is a test","time":2,"userID":0},
-    {"users":["0","1","2","3","4","5"],"speech":"This is a test but this needs to be something long","time":5,"userID":1},
-    {"users":["0","1","2","3","4","5"],"speech":"The test string is a good thing to use for development","time":6,"userID":2},
-    {"users":["0","1","2","3","4","5"],"speech":"A complex sentence is a sentence that contains an independent clause and one or more dependent clauses. An independent clause can stand alone as a sentence, but a dependent clause even though it has a subject and a verb cannot stand alone.","time":10,"userID":1},
-    {"users":["0","1","2","3","4","5"],"speech":"JavaScript also defines two trivial data types, null and undefined, each of which defines only a single value. In addition to these primitive data types, JavaScript supports a composite data type known as object. We will cover objects in detail in a separate chapter. Note − JavaScript does not make a distinction between integer values and floating-point values. All numbers in JavaScript are represented as floating-point values. JavaScript represents numbers using the 64-bit floating-point format defined by the IEEE 754 standard.","time":15,"userID":1},
-    {"users":["0","1","2","3","4","5"],"speech":"Now, imagine the challenge for Facebook. Facebook deals with enormous amount of text data on a daily basis in the form of status updates, comments etc. And it is all the more important for Facebook to utilise this text data to ","time":4,"userID":3}
-]
