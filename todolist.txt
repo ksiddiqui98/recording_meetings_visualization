@@ -21,7 +21,7 @@ Changes/additions Bubble Visualization:
 add timeline feature
 fix zoom issue
 include transitions
-include ids in mouseover
+include ids in mouseover (Samad) [X] (please check to ensure correctness)
 
 
 
