@@ -217,10 +217,10 @@
     function startVis() {
       var inter = setInterval(function() {
         loadJSON();
+        removeTooltips(); 
       }, 5000);
     }
     loadJSON();
-    removeTooltips(); 
     startVis();
   </script>
 </body>
