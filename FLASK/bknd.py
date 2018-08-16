@@ -5,6 +5,7 @@ from flask import Flask, render_template,jsonify
 
 def callback(ch, method, properties, body):
     rec = json.loads(body.decode('utf-8'))
+    rec= rec["data"]
     if(os.stat("templates\js9.json").st_size!=0):
         write_file = open("templates\js9.json","r")
         temp_string = write_file.read()
@@ -29,8 +30,8 @@ comm = commHandler.commHandler()
 #def callback2(ch, method, properties, body):
 #comm2 = commHandler.commHandler()
 #comm2.listen('amq.topic', 'abc', callback2)
-comm.listen('amq.topic', 'abc', callback)
-# ------------------------------------ flask code here
+comm.listen('amq.topic', 'SpatialContext.api.speech.iar', callback)
+#------------------------------------ flask code here
 app = Flask(__name__)
 
 @app.route("/")
@@ -40,6 +41,14 @@ def level1():
 @app.route("/js9")
 def jsonfile9():
     return render_template('js9.json')
+
+@app.route("/flare")
+def jsonflare():
+    return render_template('flare.json')
+
+@app.route("/bubble")
+def bubble():
+    return render_template('bubble.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

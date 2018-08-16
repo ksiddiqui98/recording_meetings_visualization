@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <style>
+
+  .node {
+    cursor: pointer;
+  }
+
+  .node:hover {
+    stroke: #000;
+    stroke-width: 1.5px;
+  }
+
+  .node--leaf {
+    fill: white;
+  }
+
+  .label {
+    font: 15px "Helvetica Neue", Helvetica, Arial, sans-serif;
+    text-anchor: middle;
+    text-transform: lowercase;
+    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+  }
+
+  .label,
+  .node--root,
+  .node--leaf {
+    pointer-events: none;
+  }
+  /* Tooltip stuff */
+  .tooltip {
+    position: absolute;      
+    text-align: center; 
+    text-transform: lowercase;             
+    padding: 2px;       
+    font: 12px sans-serif;    
+    background: rgba(0, 255, 255, 0.384); 
+    border: 0px;    
+    border-radius: 8px;     
+    pointer-events: none; 
+    visibility: hidden;  
+  }
+
+  </style>
+</head>
+<body>
+  <svg width="960" height="960"></svg>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script>
+
+  // values when zoomed out
+  var currentX = 470;
+  var currentY = 470;
+  var currentR = 960;
+
+  function loadJSON() {
+    var http_request = new XMLHttpRequest();
+    d3.select("#tooltip").remove()
+    try {
+      // Opera 8.0+, Firefox, Chrome, Safari
+      http_request = new XMLHttpRequest();
+    } catch(e) {
+      // Internet Explorer Browsers
+      try {
+        http_request = new ActiveXObject("Msxml2.XMLHTTP");
+      } catch(e) {
+        try {
+          http_request = new ActiveXObject("Microsoft.XMLHTTP");
+        } catch(e) {
+          // Something went wrong
+          alert("your browser broke!");
+          return false;
+        }
+      }
+    }
+    http_request.onreadystatechange = function() {
+      if(this.readyState == 4 && this.status == 200) {
+        // var jsonObj = JSON.parse(this.responseText);
+        // var data_file = "sample.json?x="+y.toString();
+        var data = JSON.parse(http_request.response);
+        if(currentX !== 470 && currentY !== 470 && currentR !== 960) {
+          zoomTo([currentX, currentY, currentR]);
+        }
+        /* 
+        Tooltip stuff 
+        */
+        var tooltip = d3.select("body")
+          .append("div")
+          .attr("class", "tooltip")
+          .attr("id", "tooltip"); 
+        
+        var t = d3.transition()
+                  .duration(750);
+
+        // var elem = document.getElementById("tooltip");
+        // elem.remove();
+
+        d3.selectAll("svg").remove();
+        d3.select("body").append("svg").attr("width", 960).attr("height",960);
+       
+        var svg = d3.select("svg"),
+            margin = 20,
+            diameter = +svg.attr("width"),
+            g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+
+        var color = d3.scaleLinear()
+            .domain([-1, 5])
+            .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
+            .interpolate(d3.interpolateHcl);
+
+        var pack = d3.pack()
+            .size([diameter - margin, diameter - margin])
+            .padding(10);
+
+        
+        root = d3.hierarchy(data)
+                .sum(function(d) { return d.size; })
+                .sort(function(a, b) { return b.value - a.value; });
+        
+        var focus = root,
+            nodes = pack(root).descendants(),
+            view;
+
+        var circle = g.selectAll("circle")
+          .data(nodes)
+          .enter().append("circle")
+          .attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
+          .style("fill", function(d) { return d.children ? color(d.depth) : null; })
+          .on("click", function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); })
+          //added for tooltip
+          .on("mouseover", function(d){
+            tooltip.transition()
+              .duration(100);
+            tooltip.style("visibility", "visible");
+            tooltip.text(d.data.name)
+                .style("left", (d3.event.pageX) + "px")    
+                .style("top", (d3.event.pageY - 28) + "px");
+          })
+          .on("mousemove", function() {
+            return tooltip.style("top", (d3.event.pageY-10)+"px")
+                          .style("left",(d3.event.pageX+10)+"px");
+          })
+          .on("mouseout", function(d){
+            tooltip.transition()
+              .duration(200)
+            tooltip.style("visibility", "hidden"); 
+          });
+          //end of circle modification for tooltip
+            
+        var text = g.selectAll("text")
+          .data(nodes)
+          .enter().append("text")
+          .attr("class", "label")
+          .style("fill-opacity", function(d) { return d.parent === root ? 1 : 0; })
+          .style("display", function(d) { return d.parent === root ? "inline" : "none"; })
+          .text(function(d) { return d.data.name; });
+
+        var node = g.selectAll("circle,text");
+
+        svg.style("background", color(-1))
+            .on("click", function() { zoom(root); });
+
+        zoomTo([root.x, root.y, root.r * 2 + margin]);
+          
+          // function startZoomed(x, y, r) {
+          //   var k = diameter / r; view = [x, y, r];
+          //   node.attr("transform", function(d) { return "translate(" + (d.x - x) * k + "," + (d.y - y) * k + ")"; });
+          //   circle.attr("r", function(d) { return d.r * k; });
+          // }
+          
+          function zoom(d) {
+            var focus0 = focus; focus = d;
+
+            var transition = d3.transition()
+                .duration(d3.event.altKey ? 7500 : 750)
+                .tween("zoom", function(d) {
+                  var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
+                  return function(t) { zoomTo(i(t)); };
+                });
+
+            transition.selectAll("text")
+              .filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
+                .style("fill-opacity", function(d) { return d.parent === focus ? 1 : 0; })
+                .on("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })
+                .on("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
+          }
+
+          function zoomTo(v) {
+            currentX = v[0];
+            currentY = v[1];
+            currentR = v[2];
+            var k = diameter / v[2]; view = v;
+            node.attr("transform", function(d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
+            circle.attr("r", function(d) { return d.r * k; });
+          }
+        }
+      }
+      http_request.open('GET', '/flare', true);
+      http_request.send();
+      return this;
+    }
+
+    function removeTooltips(){
+      var all_tooltips = document.getElementsByClassName("tooltip"); 
+      var i = 0; 
+      for (i = 0; i < all_tooltips.length; ++i){
+        all_tooltips[i].style.display = "none"; 
+      }
+    }
+
+    function startVis() {
+      var inter = setInterval(function() {
+        loadJSON();
+      }, 5000);
+    }
+    loadJSON();
+    removeTooltips(); 
+    startVis();
+  </script>
+</body>

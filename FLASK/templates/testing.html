@@ -119,7 +119,7 @@ function loadJSON(){
     function startVis(){
         var inter = setInterval(function() {
         loadJSON();
-        }, 2500);
+        }, 3000);
     }
     startVis();
 //------------------------------------------------------------can refine tex-wrap function more later----------------------------------------------------
@@ -193,8 +193,11 @@ function parsing_info(data){
         size_of_dict=j+1;
     }
     for(var i=0;i<data.length;i++){
-        dictionary_of_much_and_many[data[i].speaker].value[0]+=(data[i].end - data[i].start);
-        dictionary_of_much_and_many[data[i].speaker].value[1]++;
+        try{
+            dictionary_of_much_and_many[data[i].speaker].value[0]+=(data[i].end - data[i].start);
+            dictionary_of_much_and_many[data[i].speaker].value[1]++;
+        }catch{
+        }
     }
     return [size_of_dict, dictionary_of_much_and_many, last_words,last_person];
 }
